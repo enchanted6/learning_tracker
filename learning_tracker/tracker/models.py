@@ -22,7 +22,9 @@ class Course(models.Model):
     name=models.CharField(max_length=100,verbose_name='课程名称',help_text='请输入课程名称',null=True,blank=True,default='')
     description=models.TextField(blank=True,verbose_name='课程描述')
     created_at=models.DateTimeField(auto_now_add=True,verbose_name='创建时间')
-
+    class Meta:
+        verbose_name = '课程'
+        verbose_name_plural = '课程'
     def __str__(self):
         return self.name
     def get_total_study_time(self):
@@ -56,8 +58,9 @@ class StudyMaterial(models.Model):
     file_path=models.CharField(max_length=500, blank=True, verbose_name='文件路径或链接')
     estimated_time=models.IntegerField(default=0, verbose_name='预计学习时长（分钟）')
     created_at=models.DateTimeField(auto_now_add=True, verbose_name='添加时间')
-    
     class Meta:
+        verbose_name = '学习资料'
+        verbose_name_plural = '学习资料'
         ordering = ['-created_at']
     
     def __str__(self):
@@ -160,6 +163,8 @@ class KnowledgePoint(models.Model):
     name=models.CharField(max_length=100,verbose_name='知识点名称')
     description=models.TextField(blank=True,verbose_name='知识点描述')
     created_at=models.DateTimeField(auto_now_add=True,verbose_name='创建时间')
-
+    class Meta:
+        verbose_name = '知识点'
+        verbose_name_plural = '知识点'
     def __str__(self):
         return f"{self.course.name} - {self.name}"      

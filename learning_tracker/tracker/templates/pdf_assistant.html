@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block title %}AI学习助手{% endblock %}
+
+{% block content %}
+<style>
+    .assistant-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .upload-section {
+        background: #f5f5f5;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    .form-group input[type="file"],
+    .form-group input[type="text"],
+    .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    .form-group textarea {
+        height: 100px;
+        resize: vertical;
+    }
+    .btn {
+        background: #4CAF50;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    .btn:hover {
+        background: #45a049;
+    }
+    .btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+    }
+    .answer-section {
+        background: #e8f5e9;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+        display: none;
+    }
+    .answer-section h3 {
+        margin-top: 0;
+        color: #2e7d32;
+    }
+    .answer-content {
+        white-space: pre-wrap;
+        line-height: 1.6;
+    }
+    .error-message {
+        background: #ffebee;
+        color: #c62828;
+        padding: 15px;
+        border-radius: 4px;
+        margin-top: 10px;
+        display: none;
+    }
+    .loading {
+        display: none;
+        text-align: center;
+        padding: 20px;
+    }
+    .loading::after {
+        content: "AI正在分析中...";
+        animation: dots 1.5s infinite;
+    }
+    @keyframes dots {
+        0%, 20% { content: "AI正在分析中."; }
+        40% { content: "AI正在分析中.."; }
+        60%, 100% { content: "AI正在分析中..."; }
+    }
+</style>
+
+<div class="assistant-container">
+    <h2>📚 AI学习助手</h2>
+    <p>上传课程PDF资料，AI会帮你解析并回答学习问题！</p>
+    
+    <div class="upload-section">
+        <form id="pdfForm" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="pdf_file">📄 上传PDF文件：</label>
+                <input type="file" id="pdf_file" name="pdf_file" accept=".pdf" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="question">❓ 你的问题：</label>
+                <textarea id="question" name="question" 
+                    placeholder="例如：这份资料的主要内容是什么？请帮我总结重点。" required></textarea>
+            </div>
+            
+            <button type="submit" class="btn" id="submitBtn">🚀 开始提问</button>
+        </form>
+    </div>
+    
+    <div class="error-message" id="errorMsg"></div>
+    
+    <div class="loading" id="loading"></div>
+    
+    <div class="answer-section" id="answerSection">
+        <h3>🤖 AI回答：</h3>
+        <div class="answer-content" id="answerContent"></div>
+    </div>
+</div>
+
+<script>
+document.getElementById('pdfForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    var formData = new FormData(this);
+    var submitBtn = document.getElementById('submitBtn');
+    var loading = document.getElementById('loading');
+    var errorMsg = document.getElementById('errorMsg');
+    var answerSection = document.getElementById('answerSection');
+    var answerContent = document.getElementById('answerContent');
+    
+    // 隐藏之前的结果
+    errorMsg.style.display = 'none';
+    answerSection.style.display = 'none';
+    
+    // 显示加载状态
+    submitBtn.disabled = true;
+    loading.style.display = 'block';
+    
+    fetch('{% url "pdf_assistant" %}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(function(response) { return response.json(); })
+    .then(function(data) {
+        loading.style.display = 'none';
+        submitBtn.disabled = false;
+        
+        if (data.error) {
+            errorMsg.textContent = data.error;
+            errorMsg.style.display = 'block';
+        } else {
+            answerContent.textContent = data.answer;
+            answerSection.style.display = 'block';
+        }
+    })
+    .catch(function(error) {
+        loading.style.display = 'none';
+        submitBtn.disabled = false;
+        errorMsg.textContent = '请求失败，请重试';
+        errorMsg.style.display = 'block';
+    });
+});
+</script>
+
+{% endblock %}
+
