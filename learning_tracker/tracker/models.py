@@ -14,7 +14,7 @@ Course（课程）
    ├── PomodoroSession（番茄钟）只关联课程
    │
    └── KnowledgePoint（知识点）
-   
+
 '''
 
 class Course(models.Model):
@@ -53,13 +53,11 @@ class StudyMaterial(models.Model):
         default='text',
         verbose_name='资料类型'
     )
-    file_path = models.CharField(max_length=500, blank=True, verbose_name='文件路径或链接')
-    estimated_time = models.IntegerField(default=0, verbose_name='预计学习时长（分钟）')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='添加时间')
+    file_path=models.CharField(max_length=500, blank=True, verbose_name='文件路径或链接')
+    estimated_time=models.IntegerField(default=0, verbose_name='预计学习时长（分钟）')
+    created_at=models.DateTimeField(auto_now_add=True, verbose_name='添加时间')
     
     class Meta:
-        verbose_name = '学习资料'
-        verbose_name_plural = '学习资料'
         ordering = ['-created_at']
     
     def __str__(self):
@@ -85,11 +83,11 @@ class StudySession(models.Model):
         blank=True,
         verbose_name='学习资料（可选）'
     )
-    start_time = models.DateTimeField(verbose_name='开始时间')
-    end_time = models.DateTimeField(verbose_name='结束时间')
-    duration = models.FloatField(verbose_name='学习时长（分钟）')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
-    notes = models.TextField(blank=True, verbose_name='学习笔记')
+    start_time=models.DateTimeField(verbose_name='开始时间')
+    end_time=models.DateTimeField(verbose_name='结束时间')
+    duration=models.FloatField(verbose_name='学习时长（分钟）')
+    created_at=models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+    notes=models.TextField(blank=True, verbose_name='学习笔记')
     
     class Meta:
         verbose_name = '学习记录'
@@ -102,19 +100,19 @@ class StudySession(models.Model):
     def save(self, *args, **kwargs):
         '''自动计算学习时长'''
         if self.start_time and self.end_time:
-            delta = self.end_time - self.start_time
-            self.duration = delta.total_seconds() / 60
+            delta=self.end_time - self.start_time
+            self.duration=delta.total_seconds() / 60
         super().save(*args, **kwargs)
 
 class PomodoroSession(models.Model):
     '''番茄钟模型'''
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='课程')
-    session_date = models.DateTimeField(auto_now_add=True, verbose_name='会话时间')
-    start_time = models.DateTimeField(verbose_name='开始时间')
-    end_time = models.DateTimeField(null=True, blank=True, verbose_name='结束时间')
-    focus_time = models.IntegerField(default=25, verbose_name='专注时长（分钟）')
-    break_time = models.IntegerField(default=5, verbose_name='休息时长（分钟）')
-    completed = models.BooleanField(default=False, verbose_name='是否完成')
+    session_date=models.DateTimeField(auto_now_add=True, verbose_name='会话时间')
+    start_time=models.DateTimeField(verbose_name='开始时间')
+    end_time=models.DateTimeField(null=True, blank=True, verbose_name='结束时间')
+    focus_time=models.IntegerField(default=25, verbose_name='专注时长（分钟）')
+    break_time=models.IntegerField(default=5, verbose_name='休息时长（分钟）')
+    completed=models.BooleanField(default=False, verbose_name='是否完成')
     
     class Meta:
         verbose_name = '番茄钟'
@@ -139,10 +137,10 @@ class ReviewSchedule(models.Model):
         blank=True,
         verbose_name='学习资料（可选）'
     )
-    review_date = models.DateField(verbose_name='复习日期')
-    completed = models.BooleanField(default=False, verbose_name='是否完成')
-    review_count = models.IntegerField(default=0, verbose_name='复习次数')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+    review_date=models.DateField(verbose_name='复习日期')
+    completed=models.BooleanField(default=False, verbose_name='是否完成')
+    review_count=models.IntegerField(default=0, verbose_name='复习次数')
+    created_at=models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
     
     class Meta:
         verbose_name = '复习计划'
