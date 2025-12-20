@@ -1,0 +1,11 @@
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.container {
+    flex: 1;
+}
+.card {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}

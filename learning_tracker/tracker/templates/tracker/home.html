@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}首页 - 学习追踪{% endblock %}
+
+{% block content %}
+<div class="p-5 mb-4 bg-light rounded-3">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">欢迎回来!</h1>
+        <p class="col-md-8 fs-4">记录每一次进步，可视化你的学习历程。</p>
+        <div class="mt-4">
+            <a href="{% url 'session_list' %}" class="btn btn-primary btn-lg">查看学习记录</a>
+            <button class="btn btn-outline-secondary btn-lg" disabled>开始番茄钟 (开发中)</button>
+        </div>
+    </div>
+</div>
+
+<div class="row align-items-md-stretch">
+    <div class="col-md-6">
+        <div class="h-100 p-5 text-white bg-dark rounded-3">
+            <h2>今日概览</h2>
+            <p>这里将显示今日学习时长统计...</p>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="h-100 p-5 bg-light border rounded-3">
+            <h2>最近课程</h2>
+            <p>这里将显示最近添加的课程...</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

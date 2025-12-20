@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>📋 学习记录</h2>
+    <a href="{% url 'session_create' %}" class="btn btn-success">
+        + 新增记录
+    </a>
+</div>
+
+<!-- 筛选卡片 -->
+<div class="card mb-4">
+    <div class="card-body bg-light">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <select name="course" class="form-select">
+                    <option value="">-- 所有课程 --</option>
+                    {% for course in courses %}
+                    <option value="{{ course.id }}" {% if request.GET.course == course.id|stringformat:"s" %} selected {% endif %} >
+                        {{ course.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="date" name="date_start" class="form-control" placeholder="开始日期" value="{{ request.GET.date_start }}">
+            </div>
+            <div class="col-md-3">
+                <input type="date" name="date_end" class="form-control" placeholder="结束日期" value="{{ request.GET.date_end }}">
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">筛选</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 数据表格 -->
+<div class="table-responsive">
+    <table class="table table-hover table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>课程</th>
+                <th>开始时间</th>
+                <th>时长 (小时)</th>
+                <th>备注</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for session in sessions %}
+            <tr>
+                <td>
+                    <span class="badge" style="background-color: {{ session.course.color|default:'#6c757d' }}">
+                        {{ session.course.name }}
+                    </span>
+                </td>
+                <td>{{ session.start_time|date:"Y-m-d H:i" }}</td>
+                <td><strong>{{ session.duration }} h</strong></td>
+                <td>{{ session.notes|truncatechars:30 }}</td>
+                <td>
+                    <a href="{% url 'session_update' session.pk %}" class="btn btn-sm btn-outline-primary">编辑</a>
+                    <a href="{% url 'session_delete' session.pk %}" class="btn btn-sm btn-outline-danger">删除</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center py-4 text-muted">暂无学习记录，快去添加一条吧！</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
