@@ -11,6 +11,9 @@ urlpatterns=[
     path('courses/<int:pk>/update/', views.CourseUpdateView.as_view(), name='course_update'),
     path('courses/<int:pk>/delete/', views.CourseDeleteView.as_view(), name='course_delete'),
     path('assistant/', views.PDFAssistantView.as_view(), name='pdf_assistant'),
+    path('assistant/upload/', views.upload_pdf, name='pdf_upload'),
+    path('assistant/chat/', views.chat, name='pdf_chat'),
+    path('assistant/clear/', views.clear_chat, name='pdf_clear'),
 ]
 # <int:pk>	URL中的动态参数
 # int	类型是整数
