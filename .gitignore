@@ -75,4 +75,5 @@ htmlcov/
 !README.md
 # 如果learning_tracker文件夹里有md文件需要上传，取消下面这行的注释
 # !learning_tracker/**/*.md
-
+# 开发日记
+开发日记.txt

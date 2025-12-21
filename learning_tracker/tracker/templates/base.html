@@ -46,5 +46,17 @@
         <p>© 2025 学习进度追踪系统 - Django版</p>
     </footer>
 
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}学习进度追踪{% endblock %}</title>
+</head>
+<body>
+    <h1>学习进度追踪系统</h1>
+    <a href="{% url 'course_list' %}">📚 课程列表</a> | 
+    <a href="{% url 'pdf_assistant' %}">🤖 AI学习助手</a>
+    <hr>
+    {% block content %}{% endblock %}
 </body>
 </html>
