@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import StudySession, Course  # 导入Course用于筛选
@@ -71,11 +69,10 @@ def session_delete(request, pk):
         return redirect('session_list')
 
     return render(request, 'tracker/session_confirm_delete.html', {'session': session})
->>>>>>> c039995 (feat:agent工具化修改)
-from django.shortcuts import render
+
+# Agent相关导入
 from django.views import View
 from django.http import JsonResponse
-from .models import Course
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from langchain.memory import ConversationBufferMemory
