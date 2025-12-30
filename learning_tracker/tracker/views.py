@@ -4,7 +4,10 @@ from .models import StudySession, Course  # 导入Course用于筛选
 from .forms import StudySessionForm
 
 def home(request):
-    return render(request, 'tracker/home.html')
+    return render(request, 'tracker/home.html', context={})
+
+def pdf_assistant(request):
+    return render(request, 'pdf_assistant.html', context={})
 
 def session_list(request):
     """显示学习记录列表，支持按课程和日期筛选"""
@@ -28,7 +31,7 @@ def session_list(request):
         'sessions': sessions,
         'courses': courses,
     }
-    return render(request, 'tracker/session_list.html', context)
+    return render(request, 'sessions/session_list.html', context)
 
 
 def session_create(request):
@@ -178,7 +181,7 @@ def simple_agent(question: str, pdf_path=None, chat_history=None)->str:
 # Agent视图
 class AgentView(View):
     """智能助手页面"""
-    template_name = 'tracker/agent.html'
+    template_name = 'tracker/templates/courses/agent.html'# ?有什么用
     def get(self,request):
         """显示聊天页面"""
         pdf_path=request.session.get('pdf_file_path')
@@ -188,7 +191,7 @@ class AgentView(View):
             'has_pdf': bool(pdf_path),
             'pdf_name': pdf_name,
         }
-        return render(request, self.template_name, context)
+        return render(request,'courses/agent.html', context)
 
 
 def agent_chat(request):
@@ -282,5 +285,4 @@ def clear_chat(request):
     if 'chat_history' in request.session:
         del request.session['chat_history']
     return JsonResponse({'success':True,'message':'对话历史已清空'})
-
 

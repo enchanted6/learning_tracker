@@ -1,18 +1,20 @@
 {% extends 'base.html' %}
+
 {% block title %}课程列表{% endblock %}
+
 {% block content %}
-<h2>课程列表</h2>
-<a href="{% url 'course_create' %}">添加课程</a>
-<ul>
-{% for course in courses %}
-    <li>
-        {{ course.name }} - 
-        <a href="{% url 'course_detail' course.pk %}">查看</a>
-        <a href="{% url 'course_update' course.pk %}">编辑</a>
-        <a href="{% url 'course_delete' course.pk %}">删除</a>
-    </li>
-{% empty %}
-    <li>暂无课程</li>
-{% endfor %}
-</ul>
+    <h2>课程列表</h2>
+    <a href="{% url 'course_create' %}">添加课程</a>
+    <ul>
+        {% for course in courses %}
+        <li>
+            {{ course.name }}
+            <a href="{% url 'course_detail' course.pk %}">查看</a>
+            <a href="{% url 'course_update' course.pk %}">编辑</a>
+            <a href="{% url 'course_delete' course.pk %}">删除</a>
+        </li>
+        {% empty %}
+        <li>暂无课程</li>
+        {% endfor %}
+    </ul>
 {% endblock %}

@@ -2,10 +2,13 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    color: #4CAF50;
 }
 .container {
     flex: 1;
+    color: #4CAF50;
 }
 .card {
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    color: #4CAF50;
 }

@@ -1,31 +1,75 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页-学习追踪</title>
+    <!-- 引入独立CSS文件 -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/home_style.css' %}">
+</head>
+<body>
 
-{% block title %}首页 - 学习追踪{% endblock %}
+    <!-- 1. 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="nav-logo">LearningTracker</div>
+        <ul class="nav-links">
+            <li><a href="{% url 'home' %}">首页</a></li>
+            <li><a href="{% url 'agent' %}">Agent智能助手</a></li>
+            <li><a href="{% url 'course_list' %}">课程</a></li>
+            <li><a href="{% url 'pdf_assistant' %}">学习资料</a></li>
+            <li><a href="{% url 'session_list' %}">学习记录</a></li>
+            <li><a href="#">设置</a></li>
+        </ul>
+    </nav>
 
-{% block content %}
-<div class="p-5 mb-4 bg-light rounded-3">
-    <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">欢迎回来!</h1>
-        <p class="col-md-8 fs-4">记录每一次进步，可视化你的学习历程。</p>
-        <div class="mt-4">
-            <a href="{% url 'session_list' %}" class="btn btn-primary btn-lg">查看学习记录</a>
-            <button class="btn btn-outline-secondary btn-lg" disabled>开始番茄钟 (开发中)</button>
-        </div>
-    </div>
-</div>
+    <!-- 主体容器 -->
+    <div class="main-container">
 
-<div class="row align-items-md-stretch">
-    <div class="col-md-6">
-        <div class="h-100 p-5 text-white bg-dark rounded-3">
-            <h2>今日概览</h2>
-            <p>这里将显示今日学习时长统计...</p>
-        </div>
+        <!-- 2. 左侧面板 (25%) -->
+        <aside class="sidebar">
+            <div class="panel-section">
+                <h3>学习资料上传</h3>
+                <form action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="file" class="file-input">
+                    <button type="submit" class="btn-primary">上传 PDF</button>
+                </form>
+            </div>
+
+            <div class="panel-section">
+                <h3>快捷操作</h3>
+                <button class="btn-outline">开始计时🍅</button>
+                <button class="btn-outline">添加笔记🗒</button>
+                <button class="btn-outline">学习记录✍</button>
+            </div>
+        </aside>
+
+        <!-- 3. 中间聊天/内容区域 ，待修改 (75%) -->
+        <main class="chat-area">
+            <!-- 消息显示列表 -->
+            <div class="message-list">
+                <div class="message system">欢迎回来！今天准备学习什么？</div>
+                <div class="message user">我准备学习 Django 的模型部分。</div>
+                <div class="message ai">太棒了！模型是 Django 的核心。你需要我帮你追踪这段时间的进度吗？</div>
+                <!-- 更多消息将显示在这里 -->
+            </div>
+
+            <!-- 底部输入框 -->
+            <div class="input-container">
+                <form class="input-form">
+                    <input type="text" placeholder="输入你的学习心得或提问...">
+                    <button type="submit">发送</button>
+                </form>
+            </div>
+
+            <script>
+                var messageList = document.querySelector('.message-list');
+                messageList.scrollTop = messageList.scrollHeight;
+            </script>
+        </main>
+
     </div>
-    <div class="col-md-6">
-        <div class="h-100 p-5 bg-light border rounded-3">
-            <h2>最近课程</h2>
-            <p>这里将显示最近添加的课程...</p>
-        </div>
-    </div>
-</div>
-{% endblock %}
+
+</body>
+</html>

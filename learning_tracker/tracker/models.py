@@ -167,4 +167,4 @@ class KnowledgePoint(models.Model):
         verbose_name = '知识点'
         verbose_name_plural = '知识点'
     def __str__(self):
-        return f"{self.course.name} - {self.name}"      
+        return f"{self.course.name} - {self.name}"
