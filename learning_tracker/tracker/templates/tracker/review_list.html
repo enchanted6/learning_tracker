@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}复习计划{% endblock %}
+{% block content %}
+<h2>复习计划</h2>
+<a href="{% url 'review_create' %}">创建复习计划</a> |
+<a href="{% url 'review_auto_generate' %}">自动生成复习计划（遗忘曲线）</a>
+
+<form method="get" style="margin: 20px 0;">
+    <label>课程：</label>
+    <select name="course">
+        <option value="">全部</option>
+        {% for course in courses %}
+        <option value="{{ course.pk }}" {% if request.GET.course == course.pk|stringformat:"s" %}selected{% endif %}>{{ course.name }}</option>
+        {% endfor %}
+    </select>
+    <label><input type="checkbox" name="show_completed" value="true" {% if request.GET.show_completed == 'true' %}checked{% endif %}>显示已完成</label>
+    <button type="submit">筛选</button>
+</form>
+
+<table border="1" style="width:100%; border-collapse:collapse;">
+    <tr>
+        <th>课程</th>
+        <th>复习日期</th>
+        <th>复习次数</th>
+        <th>状态</th>
+        <th>操作</th>
+    </tr>
+    {% for review in reviews %}
+    <tr>
+        <td>{{ review.course.name }}</td>
+        <td>{{ review.review_date }}</td>
+        <td>{{ review.review_count }}</td>
+        <td>{% if review.completed %}已完成{% else %}待复习{% endif %}</td>
+        <td>
+            {% if not review.completed %}
+            <a href="{% url 'review_complete' review.pk %}">标记完成</a> |
+            {% endif %}
+            <a href="{% url 'review_delete' review.pk %}">删除</a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">暂无复习计划</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}
+

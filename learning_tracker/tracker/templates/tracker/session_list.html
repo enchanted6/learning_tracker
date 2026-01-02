@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}学习记录{% endblock %}
+{% block content %}
+<h2>学习记录</h2>
+<a href="{% url 'session_create' %}">添加记录</a>
+
+<form method="get" style="margin: 20px 0;">
+    <label>课程：</label>
+    <select name="course">
+        <option value="">全部</option>
+        {% for course in courses %}
+        <option value="{{ course.pk }}" {% if request.GET.course == course.pk|stringformat:"s" %}selected{% endif %}>{{ course.name }}</option>
+        {% endfor %}
+    </select>
+    <label>开始日期：</label>
+    <input type="date" name="date_start" value="{{ request.GET.date_start }}">
+    <label>结束日期：</label>
+    <input type="date" name="date_end" value="{{ request.GET.date_end }}">
+    <button type="submit">筛选</button>
+</form>
+
+<table border="1" style="width:100%; border-collapse:collapse;">
+    <tr>
+        <th>课程</th>
+        <th>开始时间</th>
+        <th>结束时间</th>
+        <th>时长（分钟）</th>
+        <th>操作</th>
+    </tr>
+    {% for session in sessions %}
+    <tr>
+        <td>{{ session.course.name }}</td>
+        <td>{{ session.start_time }}</td>
+        <td>{{ session.end_time }}</td>
+        <td>{{ session.duration|floatformat:1 }}</td>
+        <td>
+            <a href="{% url 'session_update' session.pk %}">编辑</a> |
+            <a href="{% url 'session_delete' session.pk %}">删除</a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">暂无记录</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}
+

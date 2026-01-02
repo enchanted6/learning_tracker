@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}{{ title|default:"学习记录表单" }}{% endblock %}
+{% block content %}
+<h2>{{ title|default:"学习记录表单" }}</h2>
+<form method="post">
+    {% csrf_token %}
+    <p><label>课程：</label>
+    <select name="course" required>
+        {% for course in form.course.field.queryset %}
+        <option value="{{ course.pk }}" {% if form.course.value == course.pk %}selected{% endif %}>{{ course.name }}</option>
+        {% endfor %}
+    </select></p>
+    <p><label>开始时间：</label><input type="datetime-local" name="start_time" value="{{ form.start_time.value|default:'' }}" required></p>
+    <p><label>结束时间：</label><input type="datetime-local" name="end_time" value="{{ form.end_time.value|default:'' }}" required></p>
+    <p><label>笔记：</label><textarea name="notes">{{ form.notes.value|default:'' }}</textarea></p>
+    <button type="submit">保存</button>
+    <a href="{% url 'session_list' %}">取消</a>
+</form>
+{% endblock %}
+

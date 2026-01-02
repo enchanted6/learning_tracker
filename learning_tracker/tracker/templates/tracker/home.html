@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}首页{% endblock %}
+{% block content %}
+<h2>欢迎使用学习进度追踪系统</h2>
+<ul>
+    <li><a href="{% url 'course_list' %}">📚 课程管理</a></li>
+    <li><a href="{% url 'material_list' %}">📄 学习资料</a></li>
+    <li><a href="{% url 'session_list' %}">📝 学习记录</a></li>
+    <li><a href="{% url 'pomodoro_list' %}">🍅 番茄钟</a></li>
+    <li><a href="{% url 'review_list' %}">📅 复习计划</a></li>
+    <li><a href="{% url 'knowledge_list' %}">💡 知识点</a></li>
+    <li><a href="{% url 'dashboard' %}">📊 仪表板</a></li>
+    <li><a href="{% url 'agent' %}">🤖 AI助手</a></li>
+</ul>
+{% endblock %}
+

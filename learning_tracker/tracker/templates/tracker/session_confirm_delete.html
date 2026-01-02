@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}删除学习记录{% endblock %}
+{% block content %}
+<h2>确认删除</h2>
+<p>确定要删除这条学习记录吗？</p>
+<p>课程：{{ session.course.name }}<br>
+时间：{{ session.start_time }} - {{ session.end_time }}</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">确认删除</button>
+    <a href="{% url 'session_list' %}">取消</a>
+</form>
+{% endblock %}
+

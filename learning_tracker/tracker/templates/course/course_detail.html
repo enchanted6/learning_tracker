@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}课程详情{% endblock %}
+{% block content %}
+<h2>{{ course.name }}</h2>
+<p><strong>描述：</strong>{{ course.description|default:"无" }}</p>
+<p><strong>创建时间：</strong>{{ course.created_at }}</p>
+<p><strong>总学习时长：</strong>{{ course.get_total_study_time }} 小时</p>
+<p>
+    <a href="{% url 'course_update' course.pk %}">编辑</a> |
+    <a href="{% url 'course_delete' course.pk %}">删除</a> |
+    <a href="{% url 'course_list' %}">返回列表</a>
+</p>
+{% endblock %}
+
