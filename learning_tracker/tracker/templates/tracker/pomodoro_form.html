@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}{{ title|default:"番茄钟" }}{% endblock %}
+{% block content %}
+<h2>{{ title|default:"番茄钟" }}</h2>
+<form method="post">
+    {% csrf_token %}
+    <p><label>课程：</label>
+    <select name="course" required>
+        {% for course in form.course.field.queryset %}
+        <option value="{{ course.pk }}">{{ course.name }}</option>
+        {% endfor %}
+    </select></p>
+    <p><label>专注时长（分钟）：</label><input type="number" name="focus_time" value="25" min="1" max="60" required></p>
+    <p><label>休息时长（分钟）：</label><input type="number" name="break_time" value="5" min="1" max="30" required></p>
+    <button type="submit">开始番茄钟</button>
+    <a href="{% url 'pomodoro_list' %}">取消</a>
+</form>
+{% endblock %}
+

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}删除复习计划{% endblock %}
+{% block content %}
+<h2>确认删除</h2>
+<p>确定要删除这个复习计划吗？</p>
+<p>课程：{{ review.course.name }}<br>
+复习日期：{{ review.review_date }}</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">确认删除</button>
+    <a href="{% url 'review_list' %}">取消</a>
+</form>
+{% endblock %}
+

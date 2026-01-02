@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}{{ title|default:"复习计划" }}{% endblock %}
+{% block content %}
+<h2>{{ title|default:"复习计划" }}</h2>
+<form method="post">
+    {% csrf_token %}
+    <p><label>课程：</label>
+    <select name="course" required>
+        {% for course in form.course.field.queryset %}
+        <option value="{{ course.pk }}">{{ course.name }}</option>
+        {% endfor %}
+    </select></p>
+    <p><label>复习日期：</label><input type="date" name="review_date" required></p>
+    <button type="submit">保存</button>
+    <a href="{% url 'review_list' %}">取消</a>
+</form>
+{% endblock %}
+

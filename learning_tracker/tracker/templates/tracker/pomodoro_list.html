@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}番茄钟{% endblock %}
+{% block content %}
+<h2>番茄钟记录</h2>
+<a href="{% url 'pomodoro_start' %}">开始新番茄钟</a>
+
+<form method="get" style="margin: 20px 0;">
+    <label>课程：</label>
+    <select name="course">
+        <option value="">全部</option>
+        {% for course in courses %}
+        <option value="{{ course.pk }}" {% if request.GET.course == course.pk|stringformat:"s" %}selected{% endif %}>{{ course.name }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">筛选</button>
+</form>
+
+<table border="1" style="width:100%; border-collapse:collapse;">
+    <tr>
+        <th>课程</th>
+        <th>开始时间</th>
+        <th>结束时间</th>
+        <th>专注时长</th>
+        <th>状态</th>
+        <th>操作</th>
+    </tr>
+    {% for pomodoro in pomodoros %}
+    <tr>
+        <td>{{ pomodoro.course.name }}</td>
+        <td>{{ pomodoro.start_time }}</td>
+        <td>{{ pomodoro.end_time|default:"进行中" }}</td>
+        <td>{{ pomodoro.focus_time }} 分钟</td>
+        <td>{% if pomodoro.completed %}已完成{% else %}进行中{% endif %}</td>
+        <td>
+            {% if not pomodoro.completed %}
+            <a href="{% url 'pomodoro_running' pomodoro.pk %}">查看/继续</a> |
+            <a href="{% url 'pomodoro_complete' pomodoro.pk %}">完成</a>
+            {% endif %}
+        </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">暂无记录</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}
+

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}{{ title|default:"知识点" }}{% endblock %}
+{% block content %}
+<h2>{{ title|default:"知识点" }}</h2>
+<form method="post">
+    {% csrf_token %}
+    <p><label>课程：</label>
+    <select name="course" required>
+        {% for course in form.course.field.queryset %}
+        <option value="{{ course.pk }}">{{ course.name }}</option>
+        {% endfor %}
+    </select></p>
+    <p><label>知识点名称：</label><input type="text" name="name" required></p>
+    <p><label>描述：</label><textarea name="description"></textarea></p>
+    <button type="submit">保存</button>
+    <a href="{% url 'knowledge_list' %}">取消</a>
+</form>
+{% endblock %}
+

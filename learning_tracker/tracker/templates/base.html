@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}学习进度追踪系统{% endblock %}</title>
+    <title>{% block title %}学习进度追踪{% endblock %}</title>
     <!-- Bootstrap CSS (仅样式) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- 自定义 CSS -->
@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
+    <h1>学习进度追踪系统</h1>
 
     <!-- 导航栏 -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
@@ -19,12 +20,18 @@
             <a class="navbar-brand" href="{% url 'home' %}">📚 学习追踪器</a>
             <div class="navbar-nav ms-auto">
                 <a class="nav-link" href="{% url 'home' %}">首页</a>
-                <a class="nav-link" href="#">课程管理</a> <!-- 成员A后续实现 -->
-                <a class="nav-link" href="{% url 'session_list' %}">学习记录</a>
-                <a class="nav-link" href="#">番茄钟</a> <!-- 阶段3实现 -->
+                <a class="nav-link" href="{% url 'course_list' %}">📚 课程</a> |
+                <a class="nav-link" href="{% url 'material_list' %}">📄 学习资料</a> |
+                <a class="nav-link" href="{% url 'session_list' %}">📝 学习记录</a> |
+                <a class="nav-link" href="{% url 'pomodoro_list' %}">🍅 番茄钟</a> |
+                <a class="nav-link" href="{% url 'review_list' %}">📅 复习计划</a> |
+                <a class="nav-link" href="{% url 'knowledge_list' %}">💡 知识点</a> |
+                <a class="nav-link" href="{% url 'dashboard' %}">📊 仪表板</a> |
+                <a class="nav-link" href="{% url 'agent' %}">🤖 AI助手</a>
             </div>
         </div>
     </nav>
+    </br>
 
     <!-- 主内容区域 -->
     <div class="container">

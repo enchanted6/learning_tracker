@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}{{ title|default:"课程表单" }}{% endblock %}
+{% block content %}
+<h2>{{ title|default:"课程表单" }}</h2>
+<form method="post">
+    {% csrf_token %}
+    <p><label>课程名称：</label><input type="text" name="name" value="{{ form.name.value|default:'' }}" required></p>
+    <p><label>课程描述：</label><textarea name="description">{{ form.description.value|default:'' }}</textarea></p>
+    <button type="submit">保存</button>
+    <a href="{% url 'course_list' %}">取消</a>
+</form>
+{% endblock %}
+
