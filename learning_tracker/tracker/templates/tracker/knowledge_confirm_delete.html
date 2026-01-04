@@ -1,12 +1,15 @@
-{% extends 'base.html' %}
+{% extends 'base_for_test.html' %}
 {% block title %}删除知识点{% endblock %}
 {% block content %}
-<h2>确认删除</h2>
-<p>确定要删除知识点 "{{ knowledge.name }}" 吗？</p>
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">确认删除</button>
-    <a href="{% url 'knowledge_list' %}">取消</a>
-</form>
+<main class="content-area" style="display: flex; justify-content: center; align-items: center;">
+    <div class="glass-card" style="border-top: 5px solid #dc3545; width: 400px;">
+        <h3>确认删除？</h3>
+        <p style="color: #666; margin: 15px 0;">此操作不可撤销，你确定要删除知识点 "{{ knowledge.name }}" 吗？</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn-del" style="width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer;">是的，确认删除</button>
+            <a href="{% url 'knowledge_list' %}" style="display: block; text-align: center; margin-top: 15px; color: #999;">取消</a>
+        </form>
+    </div>
+</main>
 {% endblock %}
-

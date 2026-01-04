@@ -1,58 +1,189 @@
-{% extends 'base.html' %}
+{% extends 'base_for_test.html' %}
 {% block title %}自动生成复习计划{% endblock %}
 {% block content %}
-<h2>自动生成复习计划（基于遗忘曲线算法）</h2>
-<p>系统会根据您最近的学习记录，使用艾宾浩斯遗忘曲线算法自动生成复习计划。</p>
+<main class="content-area">
+    <div class="glass-card">
+        <div class="header-section">
+            <h2>智能复习生成</h2>
+            <p>基于<strong>艾宾浩斯遗忘曲线</strong>，科学规划您的学习进度</p>
+        </div>
 
-<form method="post">
-    {% csrf_token %}
-    <p>
-        <label>选择课程：</label>
-        <select name="course_id" required>
-            <option value="">-- 请选择 --</option>
-            {% for course in courses %}
-            <option value="{{ course.pk }}">{{ course.name }}</option>
-            {% endfor %}
-        </select>
-    </p>
-    <p>
-        <label>学习资料（可选）：</label>
-        <select name="material_id" id="material-select">
-            <option value="">-- 全部资料 --</option>
-        </select>
-    </p>
-    <p>
-        <button type="submit">生成复习计划</button>
-        <a href="{% url 'review_list' %}">取消</a>
-    </p>
-</form>
+        <form method="post">
+            {% csrf_token %}
 
-<div style="margin-top: 30px; padding: 15px; background-color: #f5f5f5; border-radius: 5px;">
-    <h3>遗忘曲线算法说明</h3>
-    <p><strong>复习间隔：</strong></p>
-    <ul>
-        <li>第1次复习：学习后1天</li>
-        <li>第2次复习：学习后3天</li>
-        <li>第3次复习：学习后7天</li>
-        <li>第4次复习：学习后15天</li>
-        <li>第5次复习：学习后30天</li>
-        <li>之后每30天复习一次</li>
-    </ul>
-    <p><strong>说明：</strong>系统会根据您最近的学习记录自动计算复习日期，帮助您科学安排复习时间。</p>
-</div>
+            <div class="form-group">
+                <label>选择课程</label>
+                <select name="course_id" class="form-control" required>
+                    <option value="">-- 请选择目标课程 --</option>
+                    {% for course in courses %}
+                    <option value="{{ course.pk }}">{{ course.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>选择学习资料（可选）</label>
+                <select name="material_id" id="material-select" class="form-control">
+                    <option value="">-- 全部资料 --</option>
+                </select>
+                <small style="color: #999; margin-top: 5px; display: block;">选择特定资料可生成更精准的复习任务</small>
+            </div>
+
+            <div class="action-group">
+                <button type="submit" class="btn-primary">立即生成复习计划</button>
+                <a href="{% url 'review_list' %}" class="btn-link">取消返回</a>
+            </div>
+        </form>
+
+        <!-- 算法说明卡片 -->
+        <div class="algorithm-info">
+            <h3><span style="font-size: 1.2em;">📈</span> 遗忘曲线复习周期</h3>
+            <ul>
+                <li><strong>1st</strong> 学习后 1 天</li>
+                <li><strong>2nd</strong> 学习后 3 天</li>
+                <li><strong>3rd</strong> 学习后 7 天</li>
+                <li><strong>4th</strong> 学习后 15 天</li>
+                <li><strong>5th</strong> 学习后 30 天</li>
+                <li><strong>Long</strong> 之后每 30 天</li>
+            </ul>
+            <p style="margin-top: 15px; font-size: 0.85em; color: #888;">
+                系统将扫描您最近的学习轨迹，自动计算下次复习的最佳时间点，确保知识点进入长时记忆。
+            </p>
+        </div>
+    </div>
+</main>
+
+<style>
+    /* 标题与描述 */
+    .header-section {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .header-section h2 {
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .header-section p {
+        color: #666;
+        font-size: 0.95em;
+    }
+
+    /* 表单组样式 */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #444;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        background: rgba(255, 255, 255, 0.5);
+        font-size: 1em;
+        outline: none;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .form-control:focus {
+        border-color: #6e8efb;
+        box-shadow: 0 0 0 3px rgba(110, 142, 251, 0.1);
+    }
+
+    /* 按钮组 */
+    .action-group {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-top: 30px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #6e8efb, #a777e3);
+        color: white;
+        text-decoration: none;
+        border-radius: 10px;
+        padding: 12px 30px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        transition: transform 0.2s, opacity 0.3s;
+    }
+
+    .btn-primary:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+
+    .btn-link {
+        color: #666;
+        text-decoration: none;
+        font-size: 0.95em;
+    }
+
+    .btn-link:hover {
+        text-decoration: underline;
+    }
+
+    /* 算法说明区 */
+    .algorithm-info {
+        margin-top: 40px;
+        padding: 25px;
+        background: rgba(110, 142, 251, 0.05);
+        border-radius: 15px;
+        border-left: 5px solid #6e8efb;
+    }
+
+    .algorithm-info h3 {
+        color: #6e8efb;
+        font-size: 1.1em;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .algorithm-info ul {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+        padding: 0;
+        list-style: none;
+    }
+
+    .algorithm-info li {
+        font-size: 0.9em;
+        color: #555;
+        background: white;
+        padding: 8px 12px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    }
+
+    .algorithm-info li strong {
+        color: #a777e3;
+    }
+</style>
 
 <script id="materials-data" type="application/json">{{ materials_by_course_json|safe }}</script>
 <script>
-// 动态加载学习资料
+// 动态加载学习资料逻辑保持不变
 const materialsByCourse = JSON.parse(document.getElementById('materials-data').textContent);
 const courseSelect = document.querySelector('select[name="course_id"]');
 const materialSelect = document.getElementById('material-select');
 
 courseSelect.addEventListener('change', function() {
     const courseId = this.value;
-    // 清空现有选项（保留"全部资料"）
     materialSelect.innerHTML = '<option value="">-- 全部资料 --</option>';
-    
+
     if (courseId && materialsByCourse[courseId]) {
         const materials = materialsByCourse[courseId];
         materials.forEach(function(material) {
@@ -65,4 +196,3 @@ courseSelect.addEventListener('change', function() {
 });
 </script>
 {% endblock %}
-

@@ -1,19 +1,27 @@
-{% extends 'base.html' %}
+{% extends 'base_for_test.html' %}
 {% block title %}{{ title|default:"番茄钟" }}{% endblock %}
 {% block content %}
-<h2>{{ title|default:"番茄钟" }}</h2>
-<form method="post">
-    {% csrf_token %}
-    <p><label>课程：</label>
-    <select name="course" required>
-        {% for course in form.course.field.queryset %}
-        <option value="{{ course.pk }}">{{ course.name }}</option>
-        {% endfor %}
-    </select></p>
-    <p><label>专注时长（分钟）：</label><input type="number" name="focus_time" value="25" min="1" max="60" required></p>
-    <p><label>休息时长（分钟）：</label><input type="number" name="break_time" value="5" min="1" max="30" required></p>
-    <button type="submit">开始番茄钟</button>
-    <a href="{% url 'pomodoro_list' %}">取消</a>
-</form>
+<main class="content-area" style="display: flex; justify-content: center; align-items: flex-start;">
+    <div class="glass-card" style="width: 100%">
+        <h3>{% if form.instance.pk %}编辑{% else %}新增{% endif %}内容</h3>
+        <hr style="margin: 15px 0; border: none; border-top: 1px solid #eee;">
+
+        <form method="post" class="standard-form">
+            {% csrf_token %}
+            <div class="form-group">{{ form.as_p }}</div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn-primary">保存提交</button>
+                <button type="button" onclick="history.back()" class="btn-outline" style="border-color:#ccc; color:#666">取消</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<style>
+    .form-group p { margin-bottom: 15px; }
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-top: 5px;
+    }
+</style>
 {% endblock %}
 

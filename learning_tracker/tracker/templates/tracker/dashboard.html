@@ -1,51 +1,121 @@
-{% extends 'base.html' %}
-{% block title %}仪表板{% endblock %}
+{% extends 'base_for_test.html' %}
+{% block title %}仪表盘{% endblock %}
 {% block content %}
-<h2>学习统计仪表板</h2>
+    <main class="content-area">
+        <div class="dashboard-header">
+            <h2>学习统计仪表板</h2>
+            <p class="subtitle">欢迎回来！这是你目前的学习进度概览</p>
+        </div>
 
-<div style="display: flex; gap: 20px; margin: 20px 0;">
-    <div style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
-        <h3>总学习记录</h3>
-        <p style="font-size: 24px;">{{ total_sessions }}</p>
-    </div>
-    <div style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
-        <h3>总学习时长</h3>
-        <p style="font-size: 24px;">{{ total_time_hours }} 小时</p>
-    </div>
-    <div style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
-        <h3>今日学习</h3>
-        <p style="font-size: 24px;">{{ today_time_hours }} 小时</p>
-    </div>
-</div>
+        <!-- 统计数字卡片 -->
+        <div class="stats-grid">
+            <div class="glass-card stat-card blue">
+                <div class="stat-icon">🕒</div>
+                <div class="stat-info">
+                    <h3>总学习记录</h3>
+                    <div class="stat-value">{{ total_sessions }} <span class="unit">条</span></div>
+                </div>
+            </div>
+            <div class="glass-card stat-card green">
+                <div class="stat-icon">⌛</div>
+                <div class="stat-info">
+                    <h3>总学习时长</h3>
+                    <div class="stat-value">{{ total_time_hours }} <span class="unit">小时</span></div>
+                </div>
+            </div>
+            <div class="glass-card stat-card orange">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-info">
+                    <h3>今日学习</h3>
+                    <div class="stat-value">{{ today_time_hours }} <span class="unit">小时</span></div>
+                </div>
+            </div>
+        </div>
 
-{% if trend_chart %}
-<div style="margin: 20px 0;">
-    <h3>学习时长趋势（最近30天）</h3>
-    <img src="{{ trend_chart }}" alt="学习时长趋势图" style="max-width: 100%;">
-</div>
-{% endif %}
+        <!-- 图表区域 -->
+        <div class="charts-container">
+            {% if trend_chart %}
+            <div class="glass-card chart-box">
+                <div class="card-title">📈 学习时长趋势（最近30天）</div>
+                <div class="img-wrapper">
+                    <img src="{{ trend_chart }}" alt="学习时长趋势图">
+                </div>
+            </div>
+            {% endif %}
 
-{% if distribution_chart %}
-<div style="margin: 20px 0;">
-    <h3>课程时间分布</h3>
-    <img src="{{ distribution_chart }}" alt="课程时间分布图" style="max-width: 100%;">
-</div>
-{% endif %}
+            {% if distribution_chart %}
+            <div class="glass-card chart-box">
+                <div class="card-title">🥧 课程时间分布</div>
+                <div class="img-wrapper">
+                    <img src="{{ distribution_chart }}" alt="课程时间分布图">
+                </div>
+            </div>
+            {% endif %}
+        </div>
 
-<h3>课程统计（Top 5）</h3>
-<table border="1" style="width:100%; border-collapse:collapse;">
-    <tr>
-        <th>课程名称</th>
-        <th>总学习时长（分钟）</th>
-    </tr>
-    {% for course in course_stats %}
-    <tr>
-        <td>{{ course.name }}</td>
-        <td>{{ course.total_time|default:0|floatformat:1 }}</td>
-    </tr>
-    {% empty %}
-    <tr><td colspan="2">暂无数据</td></tr>
-    {% endfor %}
-</table>
+        <!-- 课程统计表格 -->
+        <div class="glass-card table-section">
+            <div class="card-title">🏆 课程统计（Top 5）</div>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>课程名称</th>
+                        <th style="text-align: right;">总学习时长（分钟）</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in course_stats %}
+                    <tr>
+                        <td><strong>{{ course.name }}</strong></td>
+                        <td style="text-align: right;" class="time-col">{{ course.total_time|default:0|floatformat:1 }} min</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" style="text-align: center; color: #999; padding: 30px;">暂无数据，快去开始学习吧！</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+<style>
+    /* 头部 */
+    .dashboard-header { margin-bottom: 30px; }
+    .dashboard-header h2 { font-size: 1.8rem; color: #2d3436; margin-bottom: 5px; }
+    .subtitle { color: #888; font-size: 0.95rem; }
+
+    /* 统计卡片布局 */
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+    .stat-card { display: flex; align-items: center; gap: 15px; transition: transform 0.3s; }
+    .stat-card:hover { transform: translateY(-5px); }
+    .stat-icon { font-size: 2.5rem; }
+    .stat-info h3 { font-size: 0.9rem; color: #666; margin-bottom: 5px; }
+    .stat-value { font-size: 1.5rem; font-weight: 800; color: #2d3436; }
+    .unit { font-size: 0.8rem; font-weight: normal; color: #999; }
+
+    /* 卡片主题色 */
+    .stat-card.blue { border-left: 5px solid #007bff; }
+    .stat-card.green { border-left: 5px solid #2ecc71; }
+    .stat-card.orange { border-left: 5px solid #e67e22; }
+
+    /* 图表区域布局 */
+    .charts-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .card-title { font-weight: bold; color: #2d3436; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+    .img-wrapper { width: 100%; border-radius: 8px; overflow: hidden; background: #fff; }
+    .img-wrapper img { width: 100%; height: auto; display: block; }
+
+    /* 表格样式 */
+    .table-section { margin-top: 10px; }
+    .styled-table { width: 100%; border-collapse: collapse; }
+    .styled-table th { background: #f9fafb; padding: 12px; text-align: left; color: #666; font-size: 0.9rem; border-bottom: 2px solid #eee; }
+    .styled-table td { padding: 15px 12px; border-bottom: 1px solid #f1f1f1; color: #444; }
+    .styled-table tr:hover { background-color: rgba(0,123,255,0.02); }
+    .time-col { color: #007bff; font-weight: bold; }
+
+    @media (max-width: 1100px) {
+        .charts-container { grid-template-columns: 1fr; }
+        .stats-grid { grid-template-columns: 1fr; }
+    }
+</style>
 {% endblock %}
-

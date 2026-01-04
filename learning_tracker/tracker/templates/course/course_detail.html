@@ -1,14 +1,87 @@
-{% extends 'base.html' %}
+{% extends 'base_for_test.html' %}
 {% block title %}课程详情{% endblock %}
 {% block content %}
-<h2>{{ course.name }}</h2>
-<p><strong>描述：</strong>{{ course.description|default:"无" }}</p>
-<p><strong>创建时间：</strong>{{ course.created_at }}</p>
-<p><strong>总学习时长：</strong>{{ course.get_total_study_time }} 小时</p>
-<p>
-    <a href="{% url 'course_update' course.pk %}">编辑</a> |
-    <a href="{% url 'course_delete' course.pk %}">删除</a> |
-    <a href="{% url 'course_list' %}">返回列表</a>
-</p>
+<main class="content-area">
+        <div class="glass-card">
+            <!-- 头部：标题与返回按钮 -->
+            <div class="detail-header">
+                <div>
+                    <span class="breadcrumb">课程详情</span>
+                    <h2>{{ course.name }}</h2>
+                </div>
+                <a href="{% url 'course_list' %}" class="btn-outline" style="width: auto; padding: 8px 15px;">返回列表</a>
+            </div>
+
+            <!-- 内容详情网格 -->
+            <div class="detail-grid">
+                <!-- 描述（独占一行） -->
+                <div class="detail-item full-width">
+                    <span class="label">课程描述</span>
+                    <p class="value description-text">{{ course.description|default:"暂无详细描述" }}</p>
+                </div>
+
+                <!-- 学习时长统计 -->
+                <div class="detail-item highlight">
+                    <span class="label">总累计学习时长</span>
+                    <div class="value big-value">{{ course.get_total_study_time }} <span class="unit">小时</span></div>
+                </div>
+
+                <!-- 创建日期 -->
+                <div class="detail-item">
+                    <span class="label">建立时间</span>
+                    <span class="value">{{ course.created_at|date:"Y-m-d H:i" }}</span>
+                </div>
+            </div>
+
+            <!-- 底部操作栏 -->
+            <div class="action-bar">
+                <a href="{% url 'course_update' course.pk %}" class="btn-edit-lg">
+                    <i class="icon">✏️</i> 编辑课程信息
+                </a>
+                <a href="{% url 'course_delete' course.pk %}" class="btn-del-outline">
+                    <i class="icon">🗑️</i> 删除此课程
+                </a>
+            </div>
+        </div>
+    </main>
+</div>
+
+<style>
+    /* 详情页特有样式 */
+    .detail-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; }
+    .breadcrumb { color: #007bff; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+    .detail-header h2 { font-size: 2rem; color: #2d3436; margin-top: 5px; }
+
+    .detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 40px; }
+    .detail-item { padding: 20px; background: #fdfdfd; border: 1px solid #f0f0f0; border-radius: 12px; }
+    .detail-item.full-width { grid-column: span 2; }
+    .detail-item.highlight { background: linear-gradient(135deg, #f5f7fa 0%, #e7f1ff 100%); border: 1px solid #d0e3ff; }
+
+    .label { color: #999; font-size: 0.85rem; display: block; margin-bottom: 8px; }
+    .value { color: #2d3436; font-size: 1.1rem; font-weight: 500; }
+    .description-text { line-height: 1.6; color: #636e72; }
+    .big-value { font-size: 2.2rem; color: #007bff; font-weight: 800; }
+    .unit { font-size: 1rem; color: #74b9ff; font-weight: normal; }
+
+    /* 操作栏按钮 */
+    .action-bar { display: flex; gap: 15px; border-top: 1px solid #eee; padding-top: 30px; }
+
+    .btn-edit-lg {
+        background: #007bff; color: white; padding: 12px 25px; border-radius: 8px;
+        text-decoration: none; font-weight: bold; transition: 0.3s;
+    }
+    .btn-edit-lg:hover { background: #0056b3; box-shadow: 0 4px 12px rgba(0,123,255,0.3); }
+
+    .btn-del-outline {
+        background: transparent; color: #dc3545; border: 1px solid #dc3545;
+        padding: 12px 25px; border-radius: 8px; text-decoration: none; transition: 0.3s;
+    }
+    .btn-del-outline:hover { background: #fff5f5; color: #c0392b; }
+
+    .btn-outline {
+        border: 1px solid #ddd; color: #666; text-decoration: none; border-radius: 6px; font-size: 0.9rem;
+    }
+    .btn-outline:hover { background: #f8f9fa; }
+</style>
 {% endblock %}
 

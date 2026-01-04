@@ -1,46 +1,76 @@
-{% extends 'base.html' %}
+{% extends 'base_for_test.html' %}
 {% block title %}复习计划{% endblock %}
+
 {% block content %}
-<h2>复习计划</h2>
-<a href="{% url 'review_create' %}">创建复习计划</a> |
-<a href="{% url 'review_auto_generate' %}">自动生成复习计划（遗忘曲线）</a>
+    <main class="content-area">
+        <div class="glass-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>复习计划</h2>
+                <a href="{% url 'review_create' %}" class="btn-primary" style="width: auto; padding: 8px 20px;">+ 创建复习计划</a>
+                <a href="{% url 'review_auto_generate' %}" class="btn-primary" style="width: auto; padding: 8px 20px;">自动生成复习计划（遗忘曲线）</a>
+            </div>
 
-<form method="get" style="margin: 20px 0;">
-    <label>课程：</label>
-    <select name="course">
-        <option value="">全部</option>
-        {% for course in courses %}
-        <option value="{{ course.pk }}" {% if request.GET.course == course.pk|stringformat:"s" %}selected{% endif %}>{{ course.name }}</option>
-        {% endfor %}
-    </select>
-    <label><input type="checkbox" name="show_completed" value="true" {% if request.GET.show_completed == 'true' %}checked{% endif %}>显示已完成</label>
-    <button type="submit">筛选</button>
-</form>
+            <!-- 2. 筛选区域 -->
+        <div class="filter-section">
+            <form method="get" class="filter-form">
+                <div class="filter-group">
+                    <label>所属课程</label>
+                    <select name="course">
+                        <option value="">全部课程</option>
+                        {% for course in courses %}
+                            {% with course_pk_str=course.pk|stringformat:"s" %}
+                                <option value="{{ course.pk }}" {% if request.GET.course == course_pk_str %}selected{% endif %}>
+                                {{ course.name }}</option>
+                            {% endwith %}
+                        {% endfor %}
+                    </select>
+                    <label><input type="checkbox" name="show_completed" value="true" {% if request.GET.show_completed == 'true' %}checked{% endif %}>显示已完成</label>
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn-filter">筛选</button>
+                    <a href="{% url 'review_list' %}" class="btn-reset">重置</a>
+                </div>
+            </form>
+        </div>
 
-<table border="1" style="width:100%; border-collapse:collapse;">
-    <tr>
-        <th>课程</th>
-        <th>复习日期</th>
-        <th>复习次数</th>
-        <th>状态</th>
-        <th>操作</th>
-    </tr>
-    {% for review in reviews %}
-    <tr>
-        <td>{{ review.course.name }}</td>
-        <td>{{ review.review_date }}</td>
-        <td>{{ review.review_count }}</td>
-        <td>{% if review.completed %}已完成{% else %}待复习{% endif %}</td>
-        <td>
-            {% if not review.completed %}
-            <a href="{% url 'review_complete' review.pk %}">标记完成</a> |
-            {% endif %}
-            <a href="{% url 'review_delete' review.pk %}">删除</a>
-        </td>
-    </tr>
-    {% empty %}
-    <tr><td colspan="5">暂无复习计划</td></tr>
-    {% endfor %}
-</table>
+
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>课程</th>
+                        <th>复习日期</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for review in reviews %}
+                    <tr>
+                        <td><strong>{{ review.course.name }}</strong></td>
+                        <td><strong>{{ review.review_date }}</strong></td>
+                        <td>{% if review.completed %}已完成{% else %}待复习{% endif %}</td>
+                        <td>
+                            {% if not review.completed %}
+                            <a href="{% url 'review_complete' review.pk %}" class="btn-sm btn-edit">标记完成</a>
+                            {% endif %}
+                            <a href="{% url 'review_delete' review.pk %}" class="btn-sm btn-del">删除</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+<style>
+    /* 筛选器样式 */
+    .filter-section { background: #fdfdfd; border: 1px solid #f0f0f0; border-radius: 10px; padding: 15px 20px; margin-bottom: 30px; }
+    .filter-form { display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+    .filter-group { display: flex; flex-direction: column; gap: 6px; }
+    .filter-group label { font-size: 0.8rem; color: #888; font-weight: 600; }
+    .filter-group select {
+        padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px;
+        background: white; min-width: 160px; outline: none; transition: 0.3s;
+    }
+    .filter-group select:focus { border-color: #007bff; box-shadow: 0 0 0 2px rgba(0,123,255,0.1); }
+</style>
 {% endblock %}
-

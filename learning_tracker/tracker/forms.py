@@ -7,7 +7,7 @@ class CourseForm(forms.ModelForm):
         model=Course
         fields=['name','description']
         widgets={
-            'name':forms.TextInput(attrs={'class':'form-control','placeholder':'请输入课程名称'}),
+            'name':forms.TextInput(attrs={'class':'form-control','placeholder':'请输入课程名称（必需）'}),
             'description':forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': '请输入课程描述（可选）'}),
         }
 

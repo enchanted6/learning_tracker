@@ -3,8 +3,6 @@
 {% block title %}课程列表{% endblock %}
 
 {% block content %}
-<!-- 继承结构与导航栏同主页 -->
-<div class="main-container">
     <main class="content-area">
         <div class="glass-card">
             <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -33,10 +31,11 @@
                             <a href="{% url 'course_delete' course.pk %}" class="btn-sm btn-del">删除</a>
                         </td>
                     </tr>
+                    {% empty %}
+                    <tr><td colspan="5">暂无复习计划</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </main>
-</div>
 {% endblock %}

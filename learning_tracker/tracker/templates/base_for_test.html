@@ -31,12 +31,20 @@
     <div class="main-container">
         <aside class="sidebar">
             <ul class="side-menu">
-                <li><a href="{% url 'dashboard' %}">仪表盘</a></li>
-                <li><a href="{% url 'agent' %}">AI助手</a></li>
-                <li><a href="{% url 'course_list' %}" class="active">课程管理</a></li>
-                <li><a href="{% url 'session_list' %}">学习记录</a></li>
-                <li><a href="{% url 'material_list' %}">学习资料</a></li>
-                <li><a href="{% url 'pomodoro_list' %}">番茄钟</a></li>
+                <li><a href="{% url 'dashboard' %}"
+                       class="{% if '/dashboard/' in request.path %}active{% endif %}">仪表盘</a></li>
+                <li><a href="{% url 'agent' %}"
+                       class="{% if '/agent/' in request.path %}active{% endif %}">AI助手</a></li>
+                <li><a href="{% url 'course_list' %}"
+                       class="{% if '/courses/' in request.path %}active{% endif %}">课程管理</a></li>
+                <li><a href="{% url 'session_list' %}"
+                       class="{% if '/sessions/' in request.path %}active{% endif %}">学习记录</a></li>
+                <li><a href="{% url 'material_list' %}"
+                       class="{% if '/materials/' in request.path %}active{% endif %}">学习资料</a></li>
+                <li><a href="{% url 'pomodoro_list' %}"
+                       class="{% if '/pomodoro/' in request.path %}active{% endif %}">番茄钟</a></li>
+                <li><a href="{% url 'review_list' %}"
+                       class="{% if '/reviews/' in request.path %}active{% endif %}">复习计划</a></li>
             </ul>
         </aside>
         <!-- 子页面内容 -->

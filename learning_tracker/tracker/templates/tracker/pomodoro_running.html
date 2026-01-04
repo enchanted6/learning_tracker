@@ -1,40 +1,145 @@
-{% extends 'base.html' %}
+{% extends 'base_for_test.html' %}
 {% block title %}番茄钟进行中{% endblock %}
-{% block content %}
-{% if is_time_up %}
-<meta http-equiv="refresh" content="5">  <!-- 时间到了，每5秒刷新一次提醒 -->
-<div style="background-color: #ffeb3b; padding: 20px; border: 3px solid #f57f17; text-align: center; margin: 20px 0;">
-    <h1 style="color: #d32f2f; font-size: 48px;">⏰ 时间到！</h1>
-    <p style="font-size: 24px; color: #d32f2f; font-weight: bold;">专注时间已结束，可以休息了！</p>
-    <p style="font-size: 18px;">休息时长：{{ pomodoro.break_time }} 分钟</p>
-    <a href="{% url 'pomodoro_complete' pomodoro.pk %}" style="display: inline-block; padding: 15px 30px; background-color: #4CAF50; color: white; text-decoration: none; font-size: 20px; border-radius: 5px; margin-top: 20px;">完成番茄钟</a>
-</div>
-{% else %}
-<meta http-equiv="refresh" content="30">  <!-- 未到时间，每30秒刷新一次 -->
-<div style="text-align: center; padding: 40px; background-color: #e3f2fd; border-radius: 10px; margin: 20px 0;">
-    <h2>🍅 番茄钟进行中</h2>
-    <div style="font-size: 36px; color: #1976d2; margin: 20px 0;">
-        <strong>{{ pomodoro.course.name }}</strong>
-    </div>
-    <div style="font-size: 48px; color: #d32f2f; font-weight: bold; margin: 30px 0;">
-        {% if remaining_minutes > 0 %}
-            {{ remaining_minutes|floatformat:0 }} 分钟
-        {% else %}
-            0 分钟
-        {% endif %}
-    </div>
-    <div style="font-size: 18px; color: #666; margin: 20px 0;">
-        已用时：{{ elapsed_minutes|floatformat:1 }} 分钟 / 总时长：{{ pomodoro.focus_time }} 分钟
-    </div>
-    <div style="margin: 30px 0;">
-        <div style="background-color: #fff; height: 30px; border-radius: 15px; overflow: hidden; margin: 20px auto; max-width: 500px;">
-            <div style="background-color: #4CAF50; height: 100%; width: {% widthratio elapsed_minutes pomodoro.focus_time 100 %}%; transition: width 0.3s;"></div>
-        </div>
-    </div>
-    <p style="color: #666; font-size: 14px;">页面每30秒自动刷新，时间到了会自动提醒</p>
-    <a href="{% url 'pomodoro_complete' pomodoro.pk %}" style="display: inline-block; padding: 10px 20px; background-color: #f44336; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px;">提前完成</a>
-    <a href="{% url 'pomodoro_list' %}" style="display: inline-block; padding: 10px 20px; background-color: #9e9e9e; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px; margin-left: 10px;">返回列表</a>
-</div>
-{% endif %}
-{% endblock %}
 
+{% block content %}
+
+<main class="content-area">
+    {% if is_time_up %}
+        <!-- 自动刷新逻辑：时间到了，每5秒刷新一次提醒 -->
+        <meta http-equiv="refresh" content="5">
+
+        <div class="glass-card time-up-card">
+            <h1 class="pulse" style="color: #d32f2f; font-size: 56px; margin-bottom: 10px;">⏰ 时间到！</h1>
+            <div class="course-badge" style="background: rgba(211, 47, 47, 0.1); color: #d32f2f;">
+                {{ pomodoro.course.name }}
+            </div>
+            <p style="font-size: 20px; color: #555; margin: 20px 0;">
+                专注时间已结束，建议休息 <strong>{{ pomodoro.break_time }}</strong> 分钟。
+            </p>
+            <div class="btn-group">
+                <a href="{% url 'pomodoro_complete' pomodoro.pk %}" class="btn btn-success" style="font-size: 1.2em; padding: 15px 40px;">完成番茄钟</a>
+            </div>
+        </div>
+
+    {% else %}
+        <!-- 自动刷新逻辑：未到时间，每30秒刷新一次 -->
+        <meta http-equiv="refresh" content="30">
+
+        <div class="glass-card">
+            <div class="course-badge">🍅 {{ pomodoro.course.name }}</div>
+            <h2 style="color: #333; font-weight: 400;">专注中...</h2>
+
+            <div class="timer-display">
+                {% if remaining_minutes > 0 %}
+                    {{ remaining_minutes|floatformat:0 }}<span style="font-size: 24px;"> 分钟</span>
+                {% else %}
+                    < 1<span style="font-size: 24px;"> 分钟</span>
+                {% endif %}
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar" style="width: {% widthratio elapsed_minutes pomodoro.focus_time 100 %}%"></div>
+            </div>
+
+            <div class="info-text">
+                已坚持：<strong>{{ elapsed_minutes|floatformat:1 }}</strong> 分钟 / 目标：{{ pomodoro.focus_time }} 分钟
+            </div>
+
+            <p style="color: #999; font-size: 13px; margin-top: 20px;">
+                <i class="fas fa-sync-alt"></i> 页面每 30 秒自动同步进度
+            </p>
+
+            <div class="btn-group">
+                <a href="{% url 'pomodoro_complete' pomodoro.pk %}" class="btn btn-danger">提前结束</a>
+                <a href="{% url 'pomodoro_list' %}" class="btn btn-secondary">返回列表</a>
+            </div>
+        </div>
+    {% endif %}
+</main>
+
+<style>
+    /* 倒计时数字 */
+    .timer-display {
+        font-size: 84px;
+        font-weight: 800;
+        color: #9ed1e1;
+        margin: 20px 0;
+        text-shadow: 0 4px 10px rgba(255, 94, 87, 0.2);
+    }
+
+    /* 课程名称 */
+    .course-badge {
+        display: inline-block;
+        padding: 8px 20px;
+        background: rgba(110, 142, 251, 0.1);
+        color: #6e8efb;
+        border-radius: 30px;
+        font-size: 1.2em;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    /* 进度条容器 */
+    .progress-container {
+        background: rgba(0, 0, 0, 0.05);
+        height: 12px;
+        border-radius: 6px;
+        overflow: hidden;
+        margin: 30px auto;
+        max-width: 500px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #6e8efb, #a777e3);
+        transition: width 1s linear;
+        border-radius: 6px;
+    }
+
+    /* 时间到状态卡片 */
+    .time-up-card {
+        background: rgba(255, 235, 59, 0.2);
+        border: 2px solid #fbc02d;
+    }
+
+    /* 按钮样式 */
+    .btn-group {
+        margin-top: 35px;
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+    }
+
+    .btn {
+        padding: 12px 25px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .btn-success { background: #4caf50; color: white; }
+    .btn-danger { background: #ff5e57; color: white; }
+    .btn-secondary { background: #9e9e9e; color: white; }
+
+    /* 呼吸灯动画 */
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    .pulse { animation: pulse 2s infinite ease-in-out; }
+
+    .info-text {
+        color: #666;
+        font-size: 0.95em;
+        margin: 10px 0;
+    }
+</style>
+{% endblock %}

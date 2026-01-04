@@ -1,5 +1,5 @@
 /* 基础布局 */
-.main-container { width: 100%; display: flex; margin-top: 60px; height: calc(100vh - 60px); }
+.main-container { width: 100%; display: flex; margin-top: 60px; min-height: calc(100vh - 60px); height: calc(100vh - 60px); }
 .sidebar { flex: 1 1 25%; background: #fff; border-right: 1px solid #eee; padding: 20px; }
 .content-area { flex: 3 3 75%; background: #f8f9fa; padding: 30px; overflow-y: auto; }
 
@@ -65,3 +65,28 @@
 .btn-detail { background: #90ee90; color: #000; }
 .btn-edit { background: #ffc107; color: #000; }
 .btn-del { background: #dc3545; color: #fff; }
+
+/* 1. 强制隐藏 body 的滚动条，确保滚动只在内容区内发生 */
+body {
+    overflow: hidden;
+}
+
+/* 2. 修复 .content-area 内部的表格可能导致的宽度溢出问题 */
+.styled-table {
+    width: 100%;
+    table-layout: fixed; /* 关键：防止表格内容无限撑开 */
+}
+
+/* 3. 确保表格单元格内的长内容能够自动换行 */
+.styled-table td,
+.styled-table th {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%; /* 关键：让 html 和 body 高度等于视口高度 */
+    overflow: hidden; /* 关键：强制隐藏滚动条 */
+}
