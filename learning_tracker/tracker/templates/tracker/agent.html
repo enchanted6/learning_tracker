@@ -1,251 +1,19 @@
 {% extends 'base.html' %}
 {% block title %}AI智能助手{% endblock %}
+
 {% block content %}
-<style>
-    .agent-container {
-        display: flex;
-        gap: 20px;
-        height: calc(100vh - 200px);
-        max-width: 1400px;
-        margin: 0 auto;
-    }
-    
-    /* 侧边栏 */
-    .sidebar {
-        width: 300px;
-        flex-shrink: 0;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 20px;
-        background-color: #f9f9f9;
-        overflow-y: auto;
-    }
-    
-    .sidebar h3 {
-        margin-top: 0;
-        color: #333;
-    }
-    
-    .pdf-status {
-        padding: 10px;
-        background-color: #e8f5e9;
-        border-radius: 5px;
-        margin-bottom: 15px;
-        font-size: 14px;
-    }
-    
-    .pdf-status.has-file {
-        background-color: #c8e6c9;
-    }
-    
-    .pdf-status .file-name {
-        font-weight: bold;
-        color: #2e7d32;
-        word-break: break-all;
-    }
-    
-    #pdf-form {
-        margin-top: 15px;
-    }
-    
-    #pdf-form input[type="file"] {
-        width: 100%;
-        padding: 8px;
-        margin-bottom: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    }
-    
-    #pdf-form button {
-        width: 100%;
-        padding: 10px;
-        background-color: #2196F3;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 14px;
-    }
-    
-    #pdf-form button:hover {
-        background-color: #1976D2;
-    }
-    
-    /* 主聊天区域 */
-    .chat-main {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        background-color: white;
-        overflow: hidden;
-    }
-    
-    .chat-header {
-        padding: 15px 20px;
-        background-color: #f5f5f5;
-        border-bottom: 1px solid #ddd;
-    }
-    
-    .chat-header h3 {
-        margin: 0;
-        color: #333;
-    }
-    
-    #chat-messages {
-        flex: 1;
-        overflow-y: auto;
-        padding: 20px;
-        background-color: #fafafa;
-    }
-    
-    .message {
-        margin-bottom: 20px;
-        animation: fadeIn 0.3s;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .message.user {
-        display: flex;
-        justify-content: flex-end;
-    }
-    
-    .message.assistant {
-        display: flex;
-        justify-content: flex-start;
-    }
-    
-    .message.error {
-        display: flex;
-        justify-content: center;
-    }
-    
-    .message-bubble {
-        max-width: 75%;
-        padding: 12px 16px;
-        border-radius: 18px;
-        word-wrap: break-word;
-    }
-    
-    .message.user .message-bubble {
-        background-color: #2196F3;
-        color: white;
-        border-bottom-right-radius: 4px;
-    }
-    
-    .message.assistant .message-bubble {
-        background-color: white;
-        color: #333;
-        border: 1px solid #e0e0e0;
-        border-bottom-left-radius: 4px;
-    }
-    
-    .message.error .message-bubble {
-        background-color: #ffebee;
-        color: #c62828;
-        border: 1px solid #ffcdd2;
-    }
-    
-    .message.assistant .message-bubble {
-        line-height: 1.6;
-        white-space: pre-wrap; /* 保留换行和空格 */
-    }
-    
-    .chat-input-area {
-        padding: 15px 20px;
-        background-color: #f5f5f5;
-        border-top: 1px solid #ddd;
-    }
-    
-    #chat-form {
-        display: flex;
-        gap: 10px;
-    }
-    
-    #question-input {
-        flex: 1;
-        padding: 12px;
-        border: 1px solid #ddd;
-        border-radius: 20px;
-        font-size: 14px;
-        outline: none;
-    }
-    
-    #question-input:focus {
-        border-color: #2196F3;
-    }
-    
-    #chat-form button {
-        padding: 12px 24px;
-        background-color: #2196F3;
-        color: white;
-        border: none;
-        border-radius: 20px;
-        cursor: pointer;
-        font-size: 14px;
-    }
-    
-    #chat-form button:hover {
-        background-color: #1976D2;
-    }
-    
-    .chat-actions {
-        margin-top: 10px;
-        text-align: center;
-    }
-    
-    .chat-actions button {
-        padding: 8px 16px;
-        background-color: #9e9e9e;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 12px;
-    }
-    
-    .chat-actions button:hover {
-        background-color: #757575;
-    }
-    
-    /* 工具列表样式 */
-    .tools-list {
-        margin-top: 15px;
-    }
-    
-    .tool-item {
-        background-color: white;
-        padding: 12px;
-        margin-bottom: 10px;
-        border-radius: 5px;
-        border: 1px solid #e0e0e0;
-        font-size: 13px;
-    }
-    
-    .tool-item strong {
-        display: block;
-        color: #1976d2;
-        margin-bottom: 5px;
-        font-size: 14px;
-    }
-    
-    .tool-item p {
-        margin: 0;
-        color: #666;
-        font-size: 12px;
-        line-height: 1.4;
-    }
-</style>
+{% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/agent_style.css' %}">
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
 
 <div class="agent-container">
     <!-- 侧边栏：上传PDF和工具列表 -->
-    <div class="sidebar">
-        <h3>📄 上传文档</h3>
+    <div class="agent-sidebar">
+        <h5>📄 上传文档</h5>
         <div class="pdf-status {% if has_pdf %}has-file{% endif %}" id="pdf-status">
             {% if has_pdf %}
                 <div>已上传文件：</div>
@@ -257,20 +25,12 @@
         <form id="pdf-form" enctype="multipart/form-data">
             {% csrf_token %}
             <input type="file" name="pdf_file" accept=".pdf" id="pdf-file-input">
-            <button type="submit">上传PDF</button>
+            <button type="submit" class="btn-primary">上传PDF</button>
         </form>
         
         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
-            <h3>🛠️ 可用工具</h3>
+            <h5>🛠️ 可用工具</h5>
             <div class="tools-list">
-                <div class="tool-item">
-                    <strong>⏰ 获取时间</strong>
-                    <p>询问"现在几点了"、"当前时间"等</p>
-                </div>
-                <div class="tool-item">
-                    <strong>🔍 搜索课程</strong>
-                    <p>说"搜索课程"、"找课程"等</p>
-                </div>
                 <div class="tool-item">
                     <strong>📝 导入学习记录</strong>
                     <p>说"导入学习记录"、"添加学习记录"等</p>
@@ -279,24 +39,46 @@
                     <strong>📄 PDF解析</strong>
                     <p>上传PDF后，询问文档内容相关问题</p>
                 </div>
+                <div class="tool-item">
+                    <strong>🔍 搜索课程</strong>
+                    <p>说"搜索课程"、"找课程"等</p>
+                </div>
+                <div class="tool-item">
+                    <strong>⏰ 获取时间</strong>
+                    <p>询问"现在几点了"、"当前时间"等</p>
+                </div>
             </div>
         </div>
     </div>
-    
+
     <!-- 主聊天区域 -->
-    <div class="chat-main">
+    <div class="agent-chat-wrapper">
+        <!-- 复用 base.html 风格的消息列表，但加入 agent 特有的动画类 -->
         <div class="chat-header">
-            <h3>💬 与AI对话</h3>
+            <h5>💬 与AI对话</h5>
         </div>
+
+        <div class="message-list agent-message-list">
+            {% for msg in chat_history %}
+                <div class="message {{ msg.role }} agent-style">
+                    <div class="message-bubble">
+                        {{ msg.content }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
         <div id="chat-messages"></div>
-        <div class="chat-input-area">
-            <form id="chat-form">
+
+        <!-- 复用 base.html 风格的输入框 -->
+        <div class="input-container">
+            <form class="input-form" id="chat-form">
                 {% csrf_token %}
-                <input type="text" id="question-input" name="question" placeholder="输入问题..." required>
-                <button type="submit">发送</button>
+                <input type="text" id="question-input" placeholder="针对 PDF 提问或寻求建议...">
+                <button type="submit" class="btn-primary" style="width: auto; padding: 0 20px;">发送</button>
             </form>
             <div class="chat-actions">
-                <button type="button" onclick="clearChat()">清空对话</button>
+                <button type="submit" class="btn-outline" onclick="clearChat()" style="width: 110px">清空对话</button>
             </div>
         </div>
     </div>

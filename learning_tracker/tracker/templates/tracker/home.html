@@ -6,18 +6,18 @@
     <title>首页-学习追踪</title>
     <!-- 引入独立CSS文件 -->
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/home_style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 
     <!-- 1. 顶部导航栏 -->
     <nav class="navbar">
-        <div class="nav-logo">LearningTracker</div>
+        <div class="nav-logo">Learning Tracker</div>
         <ul class="nav-links">
             <li><a href="{% url 'home' %}">首页</a></li>
             <li><a href="{% url 'agent' %}">Agent智能助手</a></li>
             <li><a href="{% url 'course_list' %}">课程</a></li>
-            <li><a href="{% url 'pdf_assistant' %}">学习资料</a></li>
+            <li><a href="{% url 'material_list' %}">学习资料</a></li>
             <li><a href="{% url 'session_list' %}">学习记录</a></li>
             <li><a href="#">设置</a></li>
         </ul>
@@ -57,9 +57,9 @@
 
             <!-- 底部输入框 -->
             <div class="input-container">
-                <form class="input-form">
-                    <input type="text" placeholder="输入你的学习心得或提问...">
-                    <button type="submit">发送</button>
+                <form class="input-form" id="chat-form">
+                    <input type="text" id="question-input" placeholder="针对 PDF 提问或寻求建议，请点击上方“Agent智能助手”">
+                    <button type="submit" style="width:100px">发送</button>
                 </form>
             </div>
 

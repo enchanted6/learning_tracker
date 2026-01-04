@@ -1,20 +1,42 @@
-{% extends 'base.html' %}
+{% extends 'base_for_test.html' %}
 
 {% block title %}课程列表{% endblock %}
 
 {% block content %}
-    <h2>课程列表</h2>
-    <a href="{% url 'course_create' %}">添加课程</a>
-    <ul>
-        {% for course in courses %}
-        <li>
-            {{ course.name }}
-            <a href="{% url 'course_detail' course.pk %}">查看</a>
-            <a href="{% url 'course_update' course.pk %}">编辑</a>
-            <a href="{% url 'course_delete' course.pk %}">删除</a>
-        </li>
-        {% empty %}
-        <li>暂无课程</li>
-        {% endfor %}
-    </ul>
+<!-- 继承结构与导航栏同主页 -->
+<div class="main-container">
+    <main class="content-area">
+        <div class="glass-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>课程管理</h2>
+                <a href="{% url 'course_create' %}" class="btn-primary" style="width: auto; padding: 8px 20px;">+ 添加课程</a>
+            </div>
+
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>名称</th>
+                        <th>类型/进度</th>
+                        <th>最后学习</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in courses %}
+                    <tr>
+                        <td><strong>{{ course.name }}</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <a href="{% url 'course_detail' course.pk %}" class="btn-sm btn-detail">查看</a>
+                            <a href="{% url 'course_update' course.pk %}" class="btn-sm btn-edit">编辑</a>
+                            <a href="{% url 'course_delete' course.pk %}" class="btn-sm btn-del">删除</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
 {% endblock %}

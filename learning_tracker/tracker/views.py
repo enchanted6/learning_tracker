@@ -34,7 +34,7 @@ def session_list(request):
         'sessions': sessions,
         'courses': courses,
     }
-    return render(request, 'sessions/session_list.html', context)
+    return render(request, 'tracker/session_list.html', context)
 
 
 def session_create(request):
