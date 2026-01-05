@@ -1,6 +1,3 @@
-'''
-created by:刘思扬
-'''
 from django.urls import path
 from . import views
 
