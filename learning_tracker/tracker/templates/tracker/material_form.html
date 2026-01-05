@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}{{ title|default:"学习资料表单" }}{% endblock %}
+{% block content %}
+<h2>{{ title|default:"学习资料表单" }}</h2>
+<form method="post">
+    {% csrf_token %}
+    <p><label>课程：</label>
+    <select name="course" required>
+        {% for course in form.course.field.queryset %}
+        <option value="{{ course.pk }}" {% if form.course.value == course.pk %}selected{% endif %}>{{ course.name }}</option>
+        {% endfor %}
+    </select></p>
+    <p><label>资料名称：</label><input type="text" name="name" value="{{ form.name.value|default:'' }}" required></p>
+    <p><label>资料类型：</label>
+    <select name="material_type" required>
+        {% for value, label in form.material_type.field.choices %}
+        <option value="{{ value }}" {% if form.material_type.value == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select></p>
+    <p><label>描述：</label><textarea name="description">{{ form.description.value|default:'' }}</textarea></p>
+    <p><label>文件路径或链接：</label><input type="text" name="file_path" value="{{ form.file_path.value|default:'' }}"></p>
+    <p><label>预计学习时长（分钟）：</label><input type="number" name="estimated_time" value="{{ form.estimated_time.value|default:0 }}" min="0"></p>
+    <button type="submit">保存</button>
+    <a href="{% url 'material_list' %}">取消</a>
+</form>
+{% endblock %}
+

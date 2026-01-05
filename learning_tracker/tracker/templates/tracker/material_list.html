@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}学习资料{% endblock %}
+{% block content %}
+<h2>学习资料</h2>
+<a href="{% url 'material_create' %}">添加学习资料</a>
+
+<form method="get" style="margin: 20px 0;">
+    <label>课程：</label>
+    <select name="course">
+        <option value="">全部</option>
+        {% for course in courses %}
+        <option value="{{ course.pk }}" {% if request.GET.course == course.pk|stringformat:"s" %}selected{% endif %}>{{ course.name }}</option>
+        {% endfor %}
+    </select>
+    <label>资料类型：</label>
+    <select name="material_type">
+        <option value="">全部</option>
+        {% for value, label in material_types %}
+        <option value="{{ value }}" {% if request.GET.material_type == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">筛选</button>
+</form>
+
+<table border="1" style="width:100%; border-collapse:collapse;">
+    <tr>
+        <th>课程</th>
+        <th>资料名称</th>
+        <th>类型</th>
+        <th>预计时长（分钟）</th>
+        <th>实际学习时长（分钟）</th>
+        <th>操作</th>
+    </tr>
+    {% for material in materials %}
+    <tr>
+        <td>{{ material.course.name }}</td>
+        <td>{{ material.name }}</td>
+        <td>{{ material.get_material_type_display }}</td>
+        <td>{{ material.estimated_time }}</td>
+        <td>{{ material.get_total_study_time }}</td>
+        <td>
+            <a href="{% url 'material_update' material.pk %}">编辑</a> |
+            <a href="{% url 'material_delete' material.pk %}">删除</a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">暂无学习资料</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}
+
