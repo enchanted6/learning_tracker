@@ -45,27 +45,3 @@
     <footer class="text-center text-muted py-4 mt-5 border-top">
         <p>© 2025 学习进度追踪系统 - Django版</p>
     </footer>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}学习进度追踪{% endblock %}</title>
-</head>
-<body>
-    <h1>学习进度追踪系统</h1>
-    <nav>
-        <a href="{% url 'home' %}">首页</a> |
-        <a href="{% url 'course_list' %}">📚 课程</a> |
-        <a href="{% url 'material_list' %}">📄 学习资料</a> |
-        <a href="{% url 'session_list' %}">📝 学习记录</a> |
-        <a href="{% url 'pomodoro_list' %}">🍅 番茄钟</a> |
-        <a href="{% url 'review_list' %}">📅 复习计划</a> |
-        <a href="{% url 'knowledge_list' %}">💡 知识点</a> |
-        <a href="{% url 'dashboard' %}">📊 仪表板</a> |
-        <a href="{% url 'agent' %}">🤖 AI助手</a>
-    </nav>
-    <hr>
-    {% block content %}{% endblock %}
-</body>
-</html>
