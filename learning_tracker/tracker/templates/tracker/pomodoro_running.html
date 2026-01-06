@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}番茄钟进行中{% endblock %}
+{% block content %}
+{% if is_time_up %}
+<meta http-equiv="refresh" content="5">  <!-- 时间到了，每5秒刷新一次提醒 -->
+<div style="background-color: #ffeb3b; padding: 20px; border: 3px solid #f57f17; text-align: center; margin: 20px 0;">
+    <h1 style="color: #d32f2f; font-size: 48px;">⏰ 时间到！</h1>
+    <p style="font-size: 24px; color: #d32f2f; font-weight: bold;">专注时间已结束，可以休息了！</p>
+    <p style="font-size: 18px;">休息时长：{{ pomodoro.break_time }} 分钟</p>
+    <a href="{% url 'pomodoro_complete' pomodoro.pk %}" style="display: inline-block; padding: 15px 30px; background-color: #4CAF50; color: white; text-decoration: none; font-size: 20px; border-radius: 5px; margin-top: 20px;">完成番茄钟</a>
+</div>
+{% else %}
+<meta http-equiv="refresh" content="30">  <!-- 未到时间，每30秒刷新一次 -->
+<div style="text-align: center; padding: 40px; background-color: #e3f2fd; border-radius: 10px; margin: 20px 0;">
+    <h2>🍅 番茄钟进行中</h2>
+    <div style="font-size: 36px; color: #1976d2; margin: 20px 0;">
+        <strong>{{ pomodoro.course.name }}</strong>
+    </div>
+    <div style="font-size: 48px; color: #d32f2f; font-weight: bold; margin: 30px 0;">
+        {% if remaining_minutes > 0 %}
+            {{ remaining_minutes|floatformat:0 }} 分钟
+        {% else %}
+            0 分钟
+        {% endif %}
+    </div>
+    <div style="font-size: 18px; color: #666; margin: 20px 0;">
+        已用时：{{ elapsed_minutes|floatformat:1 }} 分钟 / 总时长：{{ pomodoro.focus_time }} 分钟
+    </div>
+    <div style="margin: 30px 0;">
+        <div style="background-color: #fff; height: 30px; border-radius: 15px; overflow: hidden; margin: 20px auto; max-width: 500px;">
+            <div style="background-color: #4CAF50; height: 100%; width: {% widthratio elapsed_minutes pomodoro.focus_time 100 %}%; transition: width 0.3s;"></div>
+        </div>
+    </div>
+    <p style="color: #666; font-size: 14px;">页面每30秒自动刷新，时间到了会自动提醒</p>
+    <a href="{% url 'pomodoro_complete' pomodoro.pk %}" style="display: inline-block; padding: 10px 20px; background-color: #f44336; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px;">提前完成</a>
+    <a href="{% url 'pomodoro_list' %}" style="display: inline-block; padding: 10px 20px; background-color: #9e9e9e; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px; margin-left: 10px;">返回列表</a>
+</div>
+{% endif %}
+{% endblock %}
+

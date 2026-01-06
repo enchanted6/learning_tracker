@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}删除学习资料{% endblock %}
+{% block content %}
+<h2>确认删除</h2>
+<p>确定要删除学习资料 "{{ material.name }}" 吗？</p>
+<p>课程：{{ material.course.name }}<br>
+类型：{{ material.get_material_type_display }}</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">确认删除</button>
+    <a href="{% url 'material_list' %}">取消</a>
+</form>
+{% endblock %}
+

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}自动生成复习计划{% endblock %}
+{% block content %}
+<h2>自动生成复习计划（基于遗忘曲线算法）</h2>
+<p>系统会根据您最近的学习记录，使用艾宾浩斯遗忘曲线算法自动生成复习计划。</p>
+
+<form method="post">
+    {% csrf_token %}
+    <p>
+        <label>选择课程：</label>
+        <select name="course_id" required>
+            <option value="">-- 请选择 --</option>
+            {% for course in courses %}
+            <option value="{{ course.pk }}">{{ course.name }}</option>
+            {% endfor %}
+        </select>
+    </p>
+    <p>
+        <label>学习资料（可选）：</label>
+        <select name="material_id" id="material-select">
+            <option value="">-- 全部资料 --</option>
+        </select>
+    </p>
+    <p>
+        <button type="submit">生成复习计划</button>
+        <a href="{% url 'review_list' %}">取消</a>
+    </p>
+</form>
+
+<div style="margin-top: 30px; padding: 15px; background-color: #f5f5f5; border-radius: 5px;">
+    <h3>遗忘曲线算法说明</h3>
+    <p><strong>复习间隔：</strong></p>
+    <ul>
+        <li>第1次复习：学习后1天</li>
+        <li>第2次复习：学习后3天</li>
+        <li>第3次复习：学习后7天</li>
+        <li>第4次复习：学习后15天</li>
+        <li>第5次复习：学习后30天</li>
+        <li>之后每30天复习一次</li>
+    </ul>
+    <p><strong>说明：</strong>系统会根据您最近的学习记录自动计算复习日期，帮助您科学安排复习时间。</p>
+</div>
+
+<script id="materials-data" type="application/json">{{ materials_by_course_json|safe }}</script>
+<script>
+// 动态加载学习资料
+const materialsByCourse = JSON.parse(document.getElementById('materials-data').textContent);
+const courseSelect = document.querySelector('select[name="course_id"]');
+const materialSelect = document.getElementById('material-select');
+
+courseSelect.addEventListener('change', function() {
+    const courseId = this.value;
+    // 清空现有选项（保留"全部资料"）
+    materialSelect.innerHTML = '<option value="">-- 全部资料 --</option>';
+    
+    if (courseId && materialsByCourse[courseId]) {
+        const materials = materialsByCourse[courseId];
+        materials.forEach(function(material) {
+            const option = document.createElement('option');
+            option.value = material.id;
+            option.textContent = material.name;
+            materialSelect.appendChild(option);
+        });
+    }
+});
+</script>
+{% endblock %}
+

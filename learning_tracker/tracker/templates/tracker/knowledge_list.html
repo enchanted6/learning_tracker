@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}知识点{% endblock %}
+{% block content %}
+<h2>知识点</h2>
+<a href="{% url 'knowledge_create' %}">创建知识点</a>
+
+<form method="get" style="margin: 20px 0;">
+    <label>课程：</label>
+    <select name="course">
+        <option value="">全部</option>
+        {% for course in courses %}
+        <option value="{{ course.pk }}" {% if request.GET.course == course.pk|stringformat:"s" %}selected{% endif %}>{{ course.name }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">筛选</button>
+</form>
+
+<table border="1" style="width:100%; border-collapse:collapse;">
+    <tr>
+        <th>课程</th>
+        <th>知识点名称</th>
+        <th>描述</th>
+        <th>操作</th>
+    </tr>
+    {% for knowledge in knowledge_points %}
+    <tr>
+        <td>{{ knowledge.course.name }}</td>
+        <td>{{ knowledge.name }}</td>
+        <td>{{ knowledge.description|default:"无"|truncatewords:10 }}</td>
+        <td><a href="{% url 'knowledge_delete' knowledge.pk %}">删除</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">暂无知识点</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}
+
