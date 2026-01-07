@@ -6,7 +6,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}学习进度追踪{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    {% load static %}
+    <!-- 使用本地Bootstrap文件，不依赖CDN，加载更快更稳定 -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/generic_style.css' %}">
 </head>
@@ -57,8 +59,8 @@
         <p>© 2025 学习进度追踪系统 - Django版</p>
     </footer>
 
-    <!-- Bootstrap JS (用于弹窗和关闭告警) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS (使用本地文件，不依赖CDN，加载更快更稳定) -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

@@ -14,7 +14,8 @@ def pdf_assistant(request):
 
 def session_list(request):
     """显示学习记录列表，支持按课程和日期筛选"""
-    sessions = StudySession.objects.all()
+    # 使用select_related优化查询，避免N+1问题
+    sessions = StudySession.objects.select_related('course', 'material').all()
     courses = Course.objects.all()  # 用于下拉筛选框
 
     # 获取筛选参数
@@ -29,6 +30,7 @@ def session_list(request):
         sessions = sessions.filter(start_time__date__gte=date_start)
     if date_end:
         sessions = sessions.filter(end_time__date__lte=date_end)
+
 
     context = {
         'sessions': sessions,
@@ -267,9 +269,13 @@ class AgentView(View):
         pdf_path=request.session.get('pdf_file_path')
         pdf_name=request.session.get('pdf_file_name', '')
         
+        # 获取聊天历史
+        chat_history = request.session.get('chat_history', [])
+        
         context={
             'has_pdf': bool(pdf_path),
             'pdf_name': pdf_name,
+            'chat_history': chat_history,
         }
         return render(request, self.template_name, context)
 
@@ -368,7 +374,8 @@ def clear_chat(request):
 
 def pomodoro_list(request):
     """番茄钟记录列表"""
-    pomodoros = PomodoroSession.objects.all().order_by('-session_date')
+    # 使用select_related优化查询，避免N+1问题
+    pomodoros = PomodoroSession.objects.select_related('course').all().order_by('-session_date')
     courses = Course.objects.all()
 
     # 筛选
@@ -448,7 +455,8 @@ def pomodoro_complete(request,pk):
 
 def review_list(request):
     """复习计划列表"""
-    reviews=ReviewSchedule.objects.all().order_by('review_date')
+    # 使用select_related优化查询，避免N+1问题
+    reviews=ReviewSchedule.objects.select_related('course', 'material').all().order_by('review_date')
     courses=Course.objects.all()
 
     # 筛选
@@ -613,7 +621,8 @@ def review_delete(request, pk):
 
 def knowledge_list(request):
     """知识点列表"""
-    knowledge_points = KnowledgePoint.objects.all()
+    # 使用select_related优化查询，避免N+1问题
+    knowledge_points = KnowledgePoint.objects.select_related('course').all()
     courses = Course.objects.all()
 
     # 筛选
@@ -652,7 +661,8 @@ def knowledge_delete(request, pk):
 # ========== 学习资料管理 ==========
 def material_list(request):
     """学习资料列表"""
-    materials=StudyMaterial.objects.all()
+    # 使用select_related优化查询，避免N+1问题
+    materials=StudyMaterial.objects.select_related('course').all()
     courses=Course.objects.all()
 
     # 筛选

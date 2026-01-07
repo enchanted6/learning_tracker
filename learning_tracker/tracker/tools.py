@@ -61,7 +61,7 @@ def parse_pdf(pdf_path:str,question:str)->str:
     因此，需要设置 check_embedding_ctx_length=False 来关闭 Tokenize 行为。
     """
     embeddings=OpenAIEmbeddings(
-        base_url="https://chat.ecnu.edu.cn/open/api/v1",  # 注意：不要加/embeddings，LangChain会自动添加
+        base_url="https://chat.ecnu.edu.cn/open/api/v1",  # 不要加/embeddings，LangChain会自动添加
         model="ecnu-embedding-small",
         api_key=api_key,
         dimensions=1024,  # 学校模型返回1024维向量
