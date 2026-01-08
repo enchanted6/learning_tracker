@@ -1,0 +1,84 @@
+<!--对于所有详情页面，base_for_test.html是比base.html更合适的模板-->
+<!--故后续会逐步替换-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}学习进度追踪{% endblock %}</title>
+    {% load static %}
+    <!-- 使用本地Bootstrap文件，不依赖CDN，加载更快更稳定 -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <!-- 1. 顶部导航栏  -->
+    <nav class="navbar">
+        <div class="nav-logo">Learning Tracker</div>
+        <ul class="nav-links">
+            <li><a href="{% url 'home' %}">首页</a></li>
+            <li><a href="{% url 'course_list' %}">📚 课程</a></li>
+            <li><a href="{% url 'material_list' %}">📄 资料</a></li>
+            <li><a href="{% url 'session_list' %}">📝 记录</a></li>
+            <li><a href="{% url 'pomodoro_list' %}">🍅 番茄钟</a></li>
+            <li><a href="{% url 'review_list' %}">📅 复习</a></li>
+            <li><a href="{% url 'knowledge_list' %}">💡 知识点</a></li>
+            <li><a href="{% url 'dashboard' %}">📊 仪表板</a></li>
+            <li><a href="{% url 'agent' %}">🤖 AI助手</a></li>
+        </ul>
+    </nav>
+
+    <!-- 主体容器 (应用 25%/75% 布局) -->
+    <div class="main-container">
+
+        <!-- 2. 左侧面板 (25%) - 保持风格一致 -->
+        <aside class="sidebar">
+            {% block sidebar %}
+            <div class="panel-section">
+                <h3>学习资料上传</h3>
+                <form action="{% url 'material_list' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="file" name="file" class="form-control form-control-sm mb-2">
+                    <button type="submit" class="btn-primary">上传 PDF</button>
+                </form>
+            </div>
+
+            <div class="panel-section">
+                <h3>快捷操作</h3>
+                <a href="{% url 'pomodoro_list' %}" class="btn-outline" style="display: block; text-align: center; margin-bottom: 10px;">开始计时 🍅</a>
+                <a href="{% url 'session_list' %}" class="btn-outline" style="display: block; text-align: center; margin-bottom: 10px;">添加笔记 🗒</a>
+            </div>
+            {% endblock sidebar %}
+        </aside>
+
+        <!-- 3. 右侧内容区域 (75%) -->
+        <main class="chat-area">
+
+            <!-- 消息提示区域 -->
+            <div class="alert-area">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show m-2">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <!-- 子页面内容 -->
+            {% block content %}
+            {% endblock %}
+
+            <!-- 页脚 (移入内容区底部) -->
+            <footer class="text-center text-muted py-1 mt-auto border-top" style="font-size: 0.8rem;">
+                <p>© 2025 学习进度追踪系统 - Django版</p>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Bootstrap JS (使用本地文件，不依赖CDN，加载更快更稳定) -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

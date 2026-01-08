@@ -1,0 +1,165 @@
+{% extends 'base_for_test.html' %}
+{% block title %}知识点{% endblock %}
+
+{% block content %}
+<main class="content-area">
+    <div class="glass-card">
+        <!-- 标题栏 -->
+        <div class="header-section">
+            <h2>知识点库</h2>
+            <a href="{% url 'knowledge_create' %}" class="btn-primary">+ 创建知识点</a>
+        </div>
+
+        <!-- 筛选栏 -->
+        <form method="get" class="filter-section">
+            <label style="font-weight: 500; color: #444;">按课程筛选：</label>
+            <select name="course">
+                <option value="">全部课程</option>
+                {% for course in courses %}
+                    {% with course_pk_str=course.pk|stringformat:"s" %}
+                        <option value="{{ course.pk }}" {% if request.GET.course == course_pk_str %}selected{% endif %}>
+                        {{ course.name }}</option>
+                    {% endwith %}
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn-primary" style="padding: 7px 15px; font-size: 0.9em;">筛选</button>
+        </form>
+
+        <!-- 内容表格 -->
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th style="width: 20%;">课程</th>
+                    <th style="width: 25%;">知识点名称</th>
+                    <th style="width: 40%;">描述</th>
+                    <th style="width: 15%;">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for knowledge in knowledge_points %}
+                <tr>
+                    <td><span class="course-tag">{{ knowledge.course.name }}</span></td>
+                    <td><strong>{{ knowledge.name }}</strong></td>
+                    <td>
+                        <div class="desc-text">
+                            {{ knowledge.description|default:"无描述"|truncatewords:10 }}
+                        </div>
+                    </td>
+                    <td>
+                        <a href="{% url 'knowledge_delete' knowledge.pk %}"
+                           class="btn-sm btn-del"
+                           onclick="return confirm('确定要删除这个知识点吗？')">删除</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="text-align: center; color: #999; padding: 40px;">
+                        暂无知识点，请点击上方按钮开始创建
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<style>
+    /* 标题与顶部动作 */
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    /* 筛选区域 */
+    .filter-section {
+        margin-bottom: 20px;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .filter-section select {
+        padding: 8px 12px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        background: white;
+        outline: none;
+    }
+
+    /* 表格通用样式 */
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: transparent;
+    }
+
+    .styled-table thead tr {
+        border-bottom: 2px solid #eee;
+        text-align: left;
+    }
+
+    .styled-table th, .styled-table td {
+        padding: 15px;
+    }
+
+    .styled-table tbody tr {
+        border-bottom: 1px solid #f5f5f5;
+        transition: background 0.3s;
+    }
+
+    .styled-table tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+
+    /* 按钮样式 */
+    .btn-primary {
+        background: linear-gradient(135deg, #6e8efb, #a777e3);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        padding: 8px 20px;
+        display: inline-block;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-sm {
+        padding: 5px 12px;
+        font-size: 0.85em;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-del {
+        background-color: #ff5e57;
+        color: white;
+    }
+
+    .btn-del:hover {
+        background-color: #ff3b30;
+    }
+
+    /* 辅助样式 */
+    .course-tag {
+        color: #6e8efb;
+        font-weight: bold;
+        background: rgba(110, 142, 251, 0.1);
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+
+    .desc-text {
+        color: #666;
+        font-size: 0.9em;
+        max-width: 400px;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,66 @@
+<!--对于所有详情页面，base_for_test.html是比base.html更合适的模板-->
+<!--故后续会逐步替换-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}学习进度追踪{% endblock %}</title>
+    {% load static %}
+    <!-- 使用本地Bootstrap文件，不依赖CDN，加载更快更稳定 -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/generic_style.css' %}">
+</head>
+<body>
+    <!-- 1. 顶部导航栏  -->
+    <nav class="navbar">
+        <div class="nav-logo">Learning Tracker</div>
+        <ul class="nav-links">
+            <li><a href="{% url 'home' %}">首页</a></li>
+            <li><a href="{% url 'course_list' %}">📚 课程</a></li>
+            <li><a href="{% url 'material_list' %}">📄 资料</a></li>
+            <li><a href="{% url 'session_list' %}">📝 记录</a></li>
+            <li><a href="{% url 'pomodoro_list' %}">🍅 番茄钟</a></li>
+            <li><a href="{% url 'review_list' %}">📅 复习</a></li>
+            <li><a href="{% url 'knowledge_list' %}">💡 知识点</a></li>
+            <li><a href="{% url 'dashboard' %}">📊 仪表板</a></li>
+            <li><a href="{% url 'agent' %}">🤖 AI助手</a></li>
+        </ul>
+    </nav>
+
+    <!-- 主体容器  -->
+    <div class="main-container">
+        <aside class="sidebar">
+            <ul class="side-menu">
+                <li><a href="{% url 'dashboard' %}"
+                       class="{% if '/dashboard/' in request.path %}active{% endif %}">仪表盘</a></li>
+                <li><a href="{% url 'agent' %}"
+                       class="{% if '/agent/' in request.path %}active{% endif %}">AI助手</a></li>
+                <li><a href="{% url 'course_list' %}"
+                       class="{% if '/courses/' in request.path %}active{% endif %}">课程管理</a></li>
+                <li><a href="{% url 'session_list' %}"
+                       class="{% if '/sessions/' in request.path %}active{% endif %}">学习记录</a></li>
+                <li><a href="{% url 'material_list' %}"
+                       class="{% if '/materials/' in request.path %}active{% endif %}">学习资料</a></li>
+                <li><a href="{% url 'pomodoro_list' %}"
+                       class="{% if '/pomodoro/' in request.path %}active{% endif %}">番茄钟</a></li>
+                <li><a href="{% url 'review_list' %}"
+                       class="{% if '/reviews/' in request.path %}active{% endif %}">复习计划</a></li>
+            </ul>
+        </aside>
+        <!-- 子页面内容 -->
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- 页脚 (移入内容区底部) -->
+    <footer class="text-center text-muted py-1 mt-auto border-top" style="font-size: 0.8rem;">
+        <p>© 2025 学习进度追踪系统 - Django版</p>
+    </footer>
+
+    <!-- Bootstrap JS (使用本地文件，不依赖CDN，加载更快更稳定) -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

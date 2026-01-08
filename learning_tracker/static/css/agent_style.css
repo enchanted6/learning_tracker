@@ -1,0 +1,131 @@
+/* --- 1. 基础布局 --- */
+.agent-container {
+    display: flex; /* 必须：让侧边栏和聊天区左右并排 */
+    height: calc(100vh - 100px); /* 关键：计算视口高度，减去导航栏高度 */
+    gap: 20px;
+    padding: 20px;
+    background-color: #f5f7f9;
+    overflow: hidden; /* 防止外层容器出现双滚动条 */
+}
+.main-container .sidebar {
+    display: none; /* 隐藏侧边栏 */
+}
+
+.main-container .chat-area {
+    flex: 0 0 100%;  /* 主内容区占满宽度 */
+}
+
+/* 侧边栏适配 */
+.agent-sidebar {
+    width: 280px;
+    flex: 0 0 20%;
+    flex-shrink: 0; /* 禁止侧边栏被挤压 */
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto; /* 侧边栏内容多时可滚动 */
+}
+
+/* --- 2. 聊天区域适配 --- */
+.agent-chat-wrapper {
+    flex: 1; /* 占据剩余全部宽度 */
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    overflow: hidden; /* 内部布局控制滚动 */
+}
+
+.chat-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+/* 消息列表 - 滚动核心 */
+.agent-message-list {
+    flex: 1; /* 撑开中间区域 */
+    overflow-y: auto; /* 必须：内容超出时显示滚动条 */
+    padding: 20px;
+    background-color: #fdfdfd;
+}
+
+/* --- 3. 消息气泡样式 --- */
+.message.agent-style {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.message.user.agent-style {
+    justify-content: flex-end;
+}
+
+.message.assistant.agent-style {
+    justify-content: flex-start;
+}
+
+.message.agent-style .message-bubble {
+    max-width: 80%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+.message.user.agent-style .message-bubble {
+    background-color: #2196F3;
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.message.assistant.agent-style .message-bubble {
+    background-color: #f1f0f0;
+    color: #333;
+    border-bottom-left-radius: 4px;
+}
+
+/* --- 4. 输入框区域 --- */
+.input-container {
+    padding: 20px;
+    border-top: 1px solid #eee;
+}
+
+.input-form {
+    display: flex;
+    gap: 10px;
+}
+
+#question-input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+}
+
+#question-input:focus {
+    border-color: #2196F3;
+}
+
+/* 侧边栏小组件样式 */
+.pdf-status {
+    padding: 12px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 13px;
+}
+.pdf-status.has-file { background-color: #e8f5e9; border: 1px solid #c8e6c9; }
+
+.tool-item {
+    padding: 5px;
+    background: #f8f9fa;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    border-left: 4px solid #2196F3;
+}

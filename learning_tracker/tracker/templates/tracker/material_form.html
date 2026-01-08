@@ -1,0 +1,28 @@
+{% extends 'base_for_test.html' %}
+{% block title %}{{ title|default:"学习资料表单" }}{% endblock %}
+{% block content %}
+
+<main class="content-area" style="display: flex; justify-content: center; align-items: flex-start;">
+    <div class="glass-card" style="width: 100%">
+        <h3>{% if form.instance.pk %}编辑{% else %}新增{% endif %}内容</h3>
+        <hr style="margin: 15px 0; border: none; border-top: 1px solid #eee;">
+
+        <form method="post" class="standard-form">
+            {% csrf_token %}
+            <div class="form-group">{{ form.as_p }}</div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn-primary">保存提交</button>
+                <button type="button" onclick="history.back()" class="btn-outline" style="border-color:#ccc; color:#666">取消</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<style>
+    .form-group p { margin-bottom: 15px; }
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-top: 5px;
+    }
+</style>
+{% endblock %}
+

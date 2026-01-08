@@ -1,0 +1,401 @@
+{% extends 'base.html' %}
+{% block title %}AI智能助手{% endblock %}
+{% load static %}
+
+{% block content %}
+<style>
+    .agent-container {
+        display: flex;
+        gap: 20px;
+        height: calc(100vh - 200px);
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    /* 侧边栏 */
+    .agent-sidebar {
+        width: 300px;
+        flex-shrink: 0;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        background-color: #f9f9f9;
+        overflow-y: auto;
+    }
+    
+    .agent-sidebar h5 {
+        margin-top: 0;
+        color: #333;
+    }
+    
+    .pdf-status {
+        padding: 10px;
+        background-color: #e8f5e9;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        font-size: 14px;
+    }
+    
+    .pdf-status.has-file {
+        background-color: #c8e6c9;
+    }
+    
+    .pdf-status .file-name {
+        font-weight: bold;
+        color: #2e7d32;
+        word-break: break-all;
+    }
+    
+    #pdf-form {
+        margin-top: 15px;
+    }
+    
+    .tools-list {
+        margin-top: 15px;
+    }
+    
+    .tool-item {
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #fff;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+    }
+    
+    .tool-item strong {
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+    }
+    
+    .tool-item p {
+        margin: 0;
+        font-size: 12px;
+        color: #666;
+    }
+    
+    /* 主聊天区域 */
+    .agent-chat-wrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #fff;
+        overflow: hidden;
+    }
+    
+    .chat-header {
+        padding: 15px 20px;
+        border-bottom: 1px solid #eee;
+        background-color: #f8f9fa;
+    }
+    
+    .chat-header h5 {
+        margin: 0;
+        color: #333;
+    }
+    
+    .message-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .message {
+        max-width: 80%;
+        padding: 12px 18px;
+        border-radius: 15px;
+        line-height: 1.5;
+    }
+    
+    .message.user {
+        background-color: #007bff;
+        color: white;
+        align-self: flex-end;
+    }
+    
+    .message.assistant {
+        background-color: #f0f0f0;
+        align-self: flex-start;
+    }
+    
+    .message.error {
+        background-color: #f8d7da;
+        color: #721c24;
+        align-self: center;
+    }
+    
+    .input-container {
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-top: 1px solid #eee;
+    }
+    
+    .input-form {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .input-form input {
+        flex: 1;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        outline: none;
+    }
+    
+    .input-form button {
+        padding: 12px 24px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    
+    .input-form button:hover {
+        background-color: #0056b3;
+    }
+    
+    .input-form button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+    
+    .chat-actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .btn-outline {
+        padding: 8px 16px;
+        background: none;
+        border: 1px solid #007bff;
+        color: #007bff;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    
+    .btn-outline:hover {
+        background-color: #007bff;
+        color: white;
+    }
+</style>
+
+<div class="agent-container">
+    <!-- 侧边栏：上传PDF和工具列表 -->
+    <div class="agent-sidebar">
+        <h5>📄 上传文档</h5>
+        <div class="pdf-status {% if has_pdf %}has-file{% endif %}" id="pdf-status">
+            {% if has_pdf %}
+                <div>已上传文件：</div>
+                <div class="file-name">{{ pdf_name }}</div>
+            {% else %}
+                <div>暂未上传文件</div>
+            {% endif %}
+        </div>
+        <form id="pdf-form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="pdf_file" accept=".pdf" id="pdf-file-input">
+            <button type="submit" class="btn-primary">上传PDF</button>
+        </form>
+        <div style="margin-top: 10px; padding: 8px; background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; font-size: 12px; color: #856404;">
+            ⚠️ 注意：文件大小不得超过 50MB
+        </div>
+        
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
+            <h5>🛠️ 可用工具</h5>
+            <div class="tools-list">
+                <div class="tool-item">
+                    <strong>📝 导入学习记录</strong>
+                    <p>说"导入学习记录"、"添加学习记录"等</p>
+                </div>
+                <div class="tool-item">
+                    <strong>📄 PDF解析</strong>
+                    <p>上传PDF后，询问文档内容相关问题</p>
+                </div>
+                <div class="tool-item">
+                    <strong>🔍 搜索课程</strong>
+                    <p>说"搜索课程"、"找课程"等</p>
+                </div>
+                <div class="tool-item">
+                    <strong>⏰ 获取时间</strong>
+                    <p>询问"现在几点了"、"当前时间"等</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主聊天区域 -->
+    <div class="agent-chat-wrapper">
+        <div class="chat-header">
+            <h5>💬 与CHATECNU对话</h5>
+        </div>
+
+        <div class="message-list" id="chat-messages">
+            {% for msg in chat_history %}
+                <div class="message {% if msg.type == 'human' %}user{% elif msg.type == 'ai' %}assistant{% else %}error{% endif %}">
+                    {{ msg.content }}
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="input-container">
+            <form class="input-form" id="chat-form">
+                {% csrf_token %}
+                <input type="text" id="question-input" placeholder="针对 PDF 提问或寻求建议..." autocomplete="off">
+                <button type="submit" id="send-btn">发送</button>
+            </form>
+            <div class="chat-actions">
+                <button type="button" class="btn-outline" onclick="clearChat()">清空对话</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// 上传PDF
+document.getElementById('pdf-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const fileInput = document.getElementById('pdf-file-input');
+    if (!fileInput.files[0]) {
+        alert('请选择PDF文件');
+        return;
+    }
+    
+    const formData = new FormData(this);
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '上传中...';
+    
+    fetch("{% url 'agent_upload' %}", {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '上传PDF';
+        if (data.success) {
+            document.getElementById('pdf-status').innerHTML = 
+                '<div>已上传文件：</div><div class="file-name">' + data.filename + '</div>';
+            document.getElementById('pdf-status').classList.add('has-file');
+            fileInput.value = '';
+        } else {
+            alert('上传失败：' + data.error);
+        }
+    })
+    .catch(error => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '上传PDF';
+        alert('上传出错：' + error.message);
+    });
+});
+
+// 发送消息
+const chatForm = document.getElementById('chat-form');
+const questionInput = document.getElementById('question-input');
+const sendBtn = document.getElementById('send-btn');
+const chatMessages = document.getElementById('chat-messages');
+
+chatForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const question = questionInput.value.trim();
+    if (!question) return;
+    
+    // 添加用户消息
+    addMessage('user', question);
+    questionInput.value = '';
+    sendBtn.disabled = true;
+    sendBtn.textContent = '发送中...';
+    
+    // 显示加载消息
+    const loadingId = addMessage('assistant', '正在思考...', true);
+    
+    fetch("{% url 'agent_chat' %}", {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            'question': question
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // 移除加载消息
+        const loadingMsg = document.getElementById(loadingId);
+        if (loadingMsg) loadingMsg.remove();
+        
+        sendBtn.disabled = false;
+        sendBtn.textContent = '发送';
+        
+        if (data.success) {
+            addMessage('assistant', data.answer);
+        } else {
+            addMessage('error', '错误：' + (data.error || '未知错误'));
+        }
+    })
+    .catch(error => {
+        const loadingMsg = document.getElementById(loadingId);
+        if (loadingMsg) loadingMsg.remove();
+        sendBtn.disabled = false;
+        sendBtn.textContent = '发送';
+        addMessage('error', '网络错误：' + error.message);
+    });
+});
+
+function addMessage(type, content, isTemp = false) {
+    const messageDiv = document.createElement('div');
+    const messageId = 'msg-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    messageDiv.id = messageId;
+    messageDiv.className = 'message ' + type;
+    messageDiv.textContent = content;
+    
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    return messageId;
+}
+
+function clearChat() {
+    if (confirm('确定要清空对话历史吗？')) {
+        fetch("{% url 'agent_clear' %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                chatMessages.innerHTML = '';
+                alert('对话历史已清空');
+            } else {
+                alert('清空失败：' + (data.error || '未知错误'));
+            }
+        })
+        .catch(error => {
+            alert('清空出错：' + error.message);
+        });
+    }
+}
+
+// 回车发送（Shift+Enter换行）
+questionInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        chatForm.dispatchEvent(new Event('submit'));
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页-学习追踪</title>
+    <!-- 引入独立CSS文件 -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <!-- 1. 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="nav-logo">Learning Tracker</div>
+        <ul class="nav-links">
+            <li><a href="{% url 'home' %}">首页</a></li>
+            <li><a href="{% url 'agent' %}">Agent智能助手</a></li>
+            <li><a href="{% url 'course_list' %}">课程</a></li>
+            <li><a href="{% url 'material_list' %}">学习资料</a></li>
+            <li><a href="{% url 'session_list' %}">学习记录</a></li>
+            <li><a href="#">设置</a></li>
+        </ul>
+    </nav>
+
+    <!-- 主体容器 -->
+    <div class="main-container">
+
+        <!-- 2. 左侧面板 (25%) -->
+        <aside class="sidebar">
+            <div class="panel-section">
+                <h3>学习资料上传</h3>
+                <form action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="file" class="file-input">
+                    <button type="submit" class="btn-primary">上传 PDF</button>
+                </form>
+            </div>
+
+            <div class="panel-section">
+                <h3>快捷操作</h3>
+                <button class="btn-outline">开始计时🍅</button>
+                <button class="btn-outline">添加笔记🗒</button>
+                <button class="btn-outline">学习记录✍</button>
+            </div>
+        </aside>
+
+        <!-- 3. 中间聊天/内容区域 ，待修改 (75%) -->
+        <main class="chat-area">
+            <!-- 消息显示列表 -->
+            <div class="message-list">
+                <div class="message system">欢迎回来！今天准备学习什么？</div>
+                <div class="message user">我准备学习 Django 的模型部分。</div>
+                <div class="message ai">太棒了！模型是 Django 的核心。你需要我帮你追踪这段时间的进度吗？</div>
+                <!-- 更多消息将显示在这里 -->
+            </div>
+
+            <!-- 底部输入框 -->
+            <div class="input-container">
+                <form class="input-form" id="chat-form">
+                    <input type="text" id="question-input" placeholder="针对 PDF 提问或寻求建议，请点击上方“Agent智能助手”">
+                    <button type="submit" style="width:100px">发送</button>
+                </form>
+            </div>
+
+            <script>
+                var messageList = document.querySelector('.message-list');
+                messageList.scrollTop = messageList.scrollHeight;
+            </script>
+        </main>
+
+    </div>
+
+</body>
+</html>

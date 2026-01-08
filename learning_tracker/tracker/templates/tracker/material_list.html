@@ -1,0 +1,126 @@
+{% extends 'base_for_test.html' %}
+{% block title %}学习资料库{% endblock %}
+
+{% block content %}
+<main class="content-area">
+    <div class="glass-card">
+        <!-- 1. 标题与添加按钮 -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+            <div>
+                <h2 style="margin: 0;">学习资料管理</h2>
+                <p style="color: #888; font-size: 0.9rem; margin-top: 5px;">管理您的文档、视频、链接等各种学习资源</p>
+            </div>
+            <a href="{% url 'material_create' %}" class="btn-primary" style="width: auto; padding: 10px 20px;">+ 添加学习资料</a>
+        </div>
+
+        <!-- 2. 筛选区域 -->
+        <div class="filter-section">
+            <form method="get" class="filter-form">
+                <div class="filter-group">
+                    <label>所属课程</label>
+                    <select name="course">
+                        <option value="">全部课程</option>
+                        {% for course in courses %}
+                            {% with course_pk_str=course.pk|stringformat:"s" %}
+                                <option value="{{ course.pk }}" {% if request.GET.course == course_pk_str %}selected{% endif %}>
+                                {{ course.name }}</option>
+                            {% endwith %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>资料类型</label>
+                    <select name="material_type">
+                        <option value="">全部类型</option>
+                        {% for value, label in material_types %}
+                        <option value="{{ value }}" {% if request.GET.material_type == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn-filter">筛选</button>
+                    <a href="{% url 'material_list' %}" class="btn-reset">重置</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- 3. 数据表格 -->
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>资料名称</th>
+                    <th>所属课程</th>
+                    <th>类型</th>
+                    <th style="text-align: center;">预计时长</th>
+                    <th style="text-align: center;">已学时长</th>
+                    <th style="text-align: center;">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for material in materials %}
+                <tr>
+                    <td><strong>{{ material.name }}</strong></td>
+                    <td><span class="course-tag">{{ material.course.name }}</span></td>
+                    <td><span class="type-badge">{{ material.get_material_type_display }}</span></td>
+                    <td style="text-align: center; color: #666;">{{ material.estimated_time }} min</td>
+                    <td style="text-align: center;">
+                        <span class="study-time {% if material.get_total_study_time > 0 %}active{% endif %}">
+                            {{ material.get_total_study_time }} min
+                        </span>
+                    </td>
+                    <td style="text-align: center;">
+                        <a href="{% url 'material_update' material.pk %}" class="btn-sm btn-edit">编辑</a>
+                        <a href="{% url 'material_delete' material.pk %}" class="btn-sm btn-del">删除</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; color: #999; padding: 50px;">
+                        <div style="font-size: 3rem; margin-bottom: 10px;">📂</div>
+                        暂无学习资料，点击右上角开始添加
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<style>
+    /* 筛选器样式 */
+    .filter-section { background: #fdfdfd; border: 1px solid #f0f0f0; border-radius: 10px; padding: 15px 20px; margin-bottom: 30px; }
+    .filter-form { display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+    .filter-group { display: flex; flex-direction: column; gap: 6px; }
+    .filter-group label { font-size: 0.8rem; color: #888; font-weight: 600; }
+    .filter-group select {
+        padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px;
+        background: white; min-width: 160px; outline: none; transition: 0.3s;
+    }
+    .filter-group select:focus { border-color: #007bff; box-shadow: 0 0 0 2px rgba(0,123,255,0.1); }
+
+    .btn-filter { background: #007bff; color: white; border: none; padding: 9px 25px; border-radius: 6px; cursor: pointer; font-weight: 500; }
+    .btn-filter:hover { background: #0056b3; }
+    .btn-reset { color: #999; text-decoration: none; font-size: 0.85rem; padding-bottom: 8px; }
+    .btn-reset:hover { color: #e74c3c; }
+
+    /* 表格样式 */
+    .styled-table { width: 100%; border-collapse: collapse; }
+    .styled-table th { text-align: left; padding: 15px 12px; border-bottom: 2px solid #eee; color: #666; font-size: 0.9rem; }
+    .styled-table td { padding: 15px 12px; border-bottom: 1px solid #f1f1f1; vertical-align: middle; }
+    .styled-table tr:hover { background-color: rgba(0,123,255,0.02); }
+
+    /* 数据标签样式 */
+    .course-tag { color: #555; background: #f0f0f0; padding: 3px 8px; border-radius: 4px; font-size: 0.85rem; }
+    .type-badge { background: #eef2ff; color: #4f46e5; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; }
+    .study-time { color: #999; font-weight: 500; }
+    .study-time.active { color: #2ecc71; }
+
+    /* 按钮通用 */
+    .btn-primary { background: #007bff; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; transition: 0.3s; }
+    .btn-sm { padding: 6px 14px; font-size: 0.8rem; border-radius: 5px; text-decoration: none; display: inline-block; margin: 0 2px; }
+    .btn-edit { background: #ffc107; color: #000; }
+    .btn-edit:hover { background: #e0a800; }
+    .btn-del { background: #fff; color: #dc3545; border: 1px solid #dc3545; }
+    .btn-del:hover { background: #dc3545; color: #fff; }
+</style>
+{% endblock %}

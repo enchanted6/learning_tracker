@@ -1,0 +1,113 @@
+{% extends 'base_for_test.html' %}
+{% block title %}学习记录{% endblock %}
+{% block content %}
+<main class="content-area">
+    <div class="glass-card">
+        <!-- 头部区域 -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>学习记录详情</h2>
+            <a href="{% url 'session_create' %}" class="btn-primary" style="width: auto; padding: 8px 20px;">+ 添加记录</a>
+        </div>
+
+        <!-- 筛选表单栏 -->
+        <div class="filter-bar">
+            <form method="get" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+                <div class="form-group">
+                    <label>选择课程</label>
+                    <select name="course">
+                        <option value="">全部课程</option>
+                        {% for course in courses %}
+                            {% with course_pk_str=course.pk|stringformat:"s" %}
+                                <option value="{{ course.pk }}"
+                                {% if request.GET.course == course_pk_str %}selected{% endif %}>
+                                    {{ course.name }}
+                                </option>
+                            {% endwith %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>开始日期</label>
+                    <input type="date" name="date_start" value="{{ request.GET.date_start }}">
+                </div>
+                <div class="form-group">
+                    <label>结束日期</label>
+                    <input type="date" name="date_end" value="{{ request.GET.date_end }}">
+                </div>
+                <button type="submit" class="btn-filter">筛选</button>
+                <a href="{% url 'session_list' %}" class="btn-reset">重置</a>
+            </form>
+        </div>
+
+        <!-- 数据表格 -->
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>课程名称</th>
+                    <th>开始时间</th>
+                    <th>结束时间</th>
+                    <th>时长</th>
+                    <th style="text-align: center;">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for session in sessions %}
+                <tr>
+                    <td><strong>{{ session.course.name }}</strong></td>
+                    <td class="time-cell">{{ session.start_time|date:"Y-m-d H:i" }}</td>
+                    <td class="time-cell">{{ session.end_time|date:"Y-m-d H:i" }}</td>
+                    <td><span class="duration-badge">{{ session.duration|floatformat:1 }} 分钟</span></td>
+                    <td style="text-align: center;">
+                        <a href="{% url 'session_update' session.pk %}" class="btn-sm btn-edit">编辑</a>
+                        <a href="{% url 'session_delete' session.pk %}" class="btn-sm btn-del">删除</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; color: #999; padding: 40px;">暂无相关学习记录</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<style>
+    /* 筛选栏样式 */
+    .filter-bar {
+        background: #fdfdfd; padding: 15px; border-radius: 8px;
+        border: 1px solid #eee; margin-bottom: 25px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-group label { font-size: 0.85rem; color: #666; font-weight: bold; }
+    .form-group select, .form-group input {
+        padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; outline: none; transition: 0.3s;
+    }
+    .form-group select:focus, .form-group input:focus { border-color: #007bff; box-shadow: 0 0 0 2px rgba(0,123,255,0.1); }
+
+    /* 表格样式 */
+    .styled-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    .styled-table th { text-align: left; padding: 12px; border-bottom: 2px solid #eee; color: #666; font-size: 0.9rem; }
+    .styled-table td { padding: 15px 12px; border-bottom: 1px solid #f1f1f1; vertical-align: middle; }
+    .styled-table tr:hover { background-color: rgba(0,123,255,0.02); }
+
+    .time-cell { font-family: 'Courier New', Courier, monospace; color: #555; font-size: 0.9rem; }
+    .duration-badge { background: #e7f1ff; color: #007bff; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.85rem; }
+
+    /* 按钮系列 */
+    .btn-primary { background: #007bff; color: #fff; text-decoration: none; border-radius: 6px; transition: 0.3s; display: inline-block; }
+    .btn-primary:hover { background: #0056b3; }
+
+    .btn-filter { background: #28a745; color: white; border: none; padding: 9px 20px; border-radius: 6px; cursor: pointer; }
+    .btn-filter:hover { background: #218838; }
+
+    .btn-reset { color: #666; text-decoration: none; font-size: 0.9rem; margin-bottom: 8px; }
+    .btn-reset:hover { color: #000; }
+
+    .btn-sm { padding: 5px 12px; font-size: 0.8rem; border-radius: 4px; text-decoration: none; display: inline-block; margin: 0 2px; }
+    .btn-edit { background: #ffc107; color: #000; }
+    .btn-edit:hover { background: #e0a800; }
+    .btn-del { background: #dc3545; color: #fff; }
+    .btn-del:hover { background: #c82333; }
+</style>
+{% endblock %}

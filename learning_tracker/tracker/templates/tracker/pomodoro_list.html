@@ -1,0 +1,164 @@
+{% extends 'base_for_test.html' %}
+{% block title %}番茄钟{% endblock %}
+{% block content %}
+<main class="content-area">
+    <div class="glass-card">
+        <!-- 顶部标题与开始按钮 -->
+        <div class="header-section">
+            <h2>番茄钟记录</h2>
+            <a href="{% url 'pomodoro_start' %}" class="btn-primary" style="padding: 10px 25px;">+ 开始新番茄钟</a>
+        </div>
+
+        <!-- 筛选表单 -->
+        <form method="get" class="filter-form">
+            <label style="font-weight: bold; color: #555;">筛选课程：</label>
+            <select name="course">
+                <option value="">全部课程</option>
+                {% for course in courses %}
+                    {% with course_pk_str=course.pk|stringformat:"s" %}
+                        <option value="{{ course.pk }}" {% if request.GET.course == course_pk_str %}selected{% endif %}>
+                            {{ course.name }}</option>
+                    {% endwith %}
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn-primary" style="padding: 8px 15px;">筛选</button>
+        </form>
+
+        <!-- 记录表格 -->
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>课程</th>
+                    <th>开始时间</th>
+                    <th>时长</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pomodoro in pomodoros %}
+                <tr>
+                    <td><strong>{{ pomodoro.course.name }}</strong></td>
+                    <td style="font-size: 0.9em; color: #666;">
+                        {{ pomodoro.start_time|date:"Y-m-d H:i" }}
+                    </td>
+                    <td>{{ pomodoro.focus_time }} 分钟</td>
+                    <td>
+                        {% if pomodoro.completed %}
+                            <span class="badge badge-completed">已完成</span>
+                        {% else %}
+                            <span class="badge badge-running">进行中</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if not pomodoro.completed %}
+                            <a href="{% url 'pomodoro_running' pomodoro.pk %}" class="btn-sm btn-detail">查看/继续</a>
+                            <a href="{% url 'pomodoro_complete' pomodoro.pk %}" class="btn-sm btn-edit">完成</a>
+                        {% else %}
+                            <span style="color: #999; font-size: 0.85em;">--</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; color: #999; padding: 40px;">暂无记录</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<style>
+    /* 标题栏布局 */
+    .header-section {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    /* 筛选表单美化 */
+    .filter-form {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 25px;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 10px;
+    }
+
+    .filter-form select {
+        padding: 8px 15px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        outline: none;
+    }
+
+    /* 表格通用样式 */
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        background-color: transparent;
+    }
+
+    .styled-table thead tr {
+        border-bottom: 2px solid #eee;
+        text-align: left;
+    }
+
+    .styled-table th, .styled-table td {
+        padding: 15px;
+    }
+
+    .styled-table tbody tr {
+        border-bottom: 1px solid #f5f5f5;
+        transition: background 0.3s;
+    }
+
+    .styled-table tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+
+    /* 按钮样式 */
+    .btn-primary {
+        background: linear-gradient(135deg, #6e8efb, #a777e3);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: opacity 0.3s;
+        border: none;
+        cursor: pointer;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .btn-primary:hover {
+        opacity: 0.9;
+    }
+
+    .btn-sm {
+        padding: 5px 12px;
+        font-size: 0.85em;
+        border-radius: 5px;
+        text-decoration: none;
+        margin-right: 5px;
+        display: inline-block;
+    }
+
+    .btn-detail { background-color: #4ea8de; color: white; }
+    .btn-edit { background-color: #72efdd; color: #333; }
+
+    /* 状态标签样式 */
+    .badge {
+        padding: 4px 8px;
+        border-radius: 20px;
+        font-size: 0.8em;
+        font-weight: bold;
+    }
+    .badge-completed { background-color: #d1fae5; color: #065f46; }
+    .badge-running { background-color: #ffedd5; color: #9a3412; }
+</style>
+{% endblock %}
